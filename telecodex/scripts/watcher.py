@@ -196,6 +196,22 @@ def process_updates(state, token, chat_id):
     return ingested
 
 
+def split_text(text, limit=3200):
+    if len(text) <= limit:
+        return [text]
+    parts = []
+    remaining = text
+    while remaining:
+        chunk = remaining[:limit]
+        if len(remaining) > limit:
+            split_at = max(chunk.rfind('\n\n'), chunk.rfind('\n'), chunk.rfind(' '))
+            if split_at > limit // 2:
+                chunk = remaining[:split_at]
+        parts.append(chunk.strip())
+        remaining = remaining[len(chunk):].lstrip()
+    return [p for p in parts if p]
+
+
 def process_outbox(state, token):
     if not token:
         return 0
@@ -217,14 +233,22 @@ def process_outbox(state, token):
         text = item.get('text')
         keyboard = item.get('keyboard')
         if item.get('kind') == 'edit' and chat_id and text and item.get('message_id'):
-            edit_message(token, chat_id, item.get('message_id'), text)
-            sent += 1
+            parts = split_text(text)
+            edit_message(token, chat_id, item.get('message_id'), parts[0])
+            for idx, part in enumerate(parts[1:], start=2):
+                send_message(token, chat_id, f'(cont. {idx}/{len(parts)})\n\n{part}')
+            sent += len(parts)
         elif chat_id and text:
-            resp = send_message(token, chat_id, text, keyboard=keyboard)
-            if item.get('store_as') and resp and isinstance(resp, dict):
-                result = resp.get('result') or {}
-                state[item['store_as']] = result.get('message_id')
-            sent += 1
+            parts = split_text(text)
+            first = True
+            for idx, part in enumerate(parts, start=1):
+                payload = part if len(parts) == 1 else f'({idx}/{len(parts)})\n\n{part}'
+                resp = send_message(token, chat_id, payload, keyboard=keyboard if first else None)
+                if first and item.get('store_as') and resp and isinstance(resp, dict):
+                    result = resp.get('result') or {}
+                    state[item['store_as']] = result.get('message_id')
+                first = False
+                sent += 1
         state['last_outbox_line'] = state.get('last_outbox_line', 0) + 1
     return sent
 
