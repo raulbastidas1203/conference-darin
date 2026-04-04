@@ -2,4 +2,8 @@ telecodex/config/telegram.settings.json
 telecodex/logs/
 telecodex/.env
 telecodex/runtime/*.pid
+telecodex/runtime/*.jsonl
+telecodex/runtime/*.json
 telecodex/.cursor-telegram/
+telecodex/scripts/__pycache__/
+telecodex/test.md
