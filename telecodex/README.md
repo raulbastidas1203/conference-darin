@@ -74,6 +74,29 @@ Piezas importantes:
 
 El bridge hoy prioriza el binario de VS Code y cae al de Cursor si hace falta.
 
+## Servicio autoarrancable en Linux
+
+`telecodex` ya puede correr como servicio de usuario con systemd.
+
+Archivo:
+- `~/.config/systemd/user/telecodex.service`
+
+Comandos útiles:
+
+```bash
+systemctl --user status telecodex.service
+systemctl --user restart telecodex.service
+systemctl --user stop telecodex.service
+systemctl --user start telecodex.service
+systemctl --user enable telecodex.service
+```
+
+Notas de seguridad:
+- corre como tu usuario, no como root
+- no abre puertos públicos nuevos
+- usa tu `.env` local para el token
+- el riesgo principal sigue siendo proteger el bot token y el acceso a tu Telegram
+
 ## Estado actual
 
 El proyecto ya funciona para el flujo principal:
@@ -82,6 +105,7 @@ El proyecto ya funciona para el flujo principal:
 - saber cuándo terminó
 - responder cuestionarios estructurados
 - reenviar respuestas al hilo
+- autoarrancar al iniciar sesión en Linux
 
 ## Limitaciones abiertas
 - responder `request_user_input` de forma realmente nativa por `call_id` sería mejor que reenviarlo como continuación textual; aún está pendiente explorar eso

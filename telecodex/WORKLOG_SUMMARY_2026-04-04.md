@@ -36,9 +36,9 @@ El sistema ya permite:
 - ver preguntas estructuradas con opciones y descripciones
 - responderlas desde Telegram
 - reenviar esas respuestas al hilo
+- arrancar automáticamente como servicio de usuario en Linux
 
 ## Pendientes
 - Intentar responder `request_user_input` de forma más nativa al `call_id`, en vez de resumirlo como prompt nuevo
 - Afinar deduplicación/estado cuando Codex genera varios bloques de preguntas seguidos
-- Limpiar `__pycache__` del repo antes de dejarlo público/privado final
 - Mejorar formateo y rate limiting de mensajes de progreso para evitar ruido
