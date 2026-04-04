@@ -234,12 +234,36 @@ def main():
         elif isinstance(reply, dict) and reply.get('action') == 'connect_session':
             chat_id = str(item.get('chat_id'))
             monitors = load_monitors()
-            monitors[chat_id] = {'alias': reply['alias']}
+            sess = resolve_codex_session(reply['alias'])
+            status_text = ''
+            last_completed = None
+            line_count = 0
+            if sess and sess.get('file'):
+                try:
+                    data = Path(sess['file']).read_text(encoding='utf-8', errors='replace').splitlines()
+                    line_count = len(data)
+                    recent_msgs = []
+                    for raw in reversed(data[-120:]):
+                        obj = json.loads(raw)
+                        if obj.get('type') == 'event_msg' and (obj.get('payload') or {}).get('type') == 'turn_completed' and not last_completed:
+                            last_completed = obj.get('timestamp')
+                        if obj.get('type') == 'event_msg' and (obj.get('payload') or {}).get('type') == 'agent_message':
+                            msg = (obj.get('payload') or {}).get('message')
+                            if msg:
+                                recent_msgs.append(msg)
+                        if last_completed and len(recent_msgs) >= 2:
+                            break
+                    recent_msgs.reverse()
+                    if recent_msgs:
+                        status_text = '\n\nMensajes recientes:\n' + '\n\n'.join(recent_msgs[-2:])[:1500]
+                except Exception:
+                    pass
+            monitors[chat_id] = {'alias': reply['alias'], 'last_completed': last_completed, 'line_count': line_count}
             save_monitors(monitors)
             append(OUTBOX, {
                 'kind': 'reply',
                 'chat_id': chat_id,
-                'text': f"Conectado a {reply['alias']}. Te avisaré cuando ese chat termine un turno nuevo.",
+                'text': f"Conectado a {reply['alias']}. Te avisaré cuando ese chat termine un turno nuevo.{status_text}",
             })
         elif isinstance(reply, dict) and reply.get('action') == 'disconnect_session':
             chat_id = str(item.get('chat_id'))

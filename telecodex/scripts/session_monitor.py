@@ -45,20 +45,24 @@ def extract_last_status(file_path: Path):
         return None
     lines = file_path.read_text(encoding='utf-8', errors='replace').splitlines()
     last_completed = None
-    last_msg = None
-    for line in reversed(lines[-80:]):
+    agent_messages = []
+    for line in reversed(lines[-120:]):
         try:
             obj = json.loads(line)
         except Exception:
             continue
         t = obj.get('type')
         payload = obj.get('payload') or {}
-        if t == 'event_msg' and payload.get('type') == 'turn_completed':
+        if t == 'event_msg' and payload.get('type') == 'turn_completed' and not last_completed:
             last_completed = obj.get('timestamp')
+        if t == 'event_msg' and payload.get('type') == 'agent_message':
+            msg = payload.get('message')
+            if msg:
+                agent_messages.append(msg)
+        if last_completed and len(agent_messages) >= 3:
             break
-        if t == 'event_msg' and payload.get('type') == 'agent_message' and not last_msg:
-            last_msg = payload.get('message')
-    return {'last_completed': last_completed, 'last_message': last_msg, 'line_count': len(lines)}
+    agent_messages.reverse()
+    return {'last_completed': last_completed, 'agent_messages': agent_messages[-3:], 'line_count': len(lines)}
 
 
 def tick():
@@ -83,8 +87,10 @@ def tick():
             mon['last_completed'] = now_completed
             changed = True
             text = f"{alias} terminó de trabajar."
-            if status.get('last_message'):
-                text += f"\n\nÚltimo mensaje: {status['last_message'][:800]}"
+            msgs = status.get('agent_messages') or []
+            if msgs:
+                preview = '\n\n'.join(msgs[-3:])
+                text += f"\n\nMensajes recientes:\n{preview[:2000]}"
             append(OUTBOX, {'kind': 'reply', 'chat_id': chat_id, 'text': text})
     if changed:
         save_json(MONITORS, monitors)
