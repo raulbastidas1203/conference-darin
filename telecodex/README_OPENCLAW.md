@@ -197,6 +197,14 @@ Eso registra automáticamente en `runtime/events.jsonl`:
 - fin exitoso
 - o error con tail de stdout/stderr
 
+## Directorio de trabajo actual para `/codex`
+
+Ahora mismo el bridge reanuda sesiones Codex usando como directorio base:
+
+- `/home/raul/Documents`
+
+Si luego quieres hacerlo configurable, lo podemos mover a `.env` o a un archivo local.
+
 La idea es simple:
 - cualquier proceso local escribe eventos en `events.jsonl`
 - el watcher los resume y los manda por Telegram

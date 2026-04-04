@@ -14,7 +14,7 @@ OUTBOX = RUNTIME / 'outbox.jsonl'
 DEDUP = RUNTIME / 'codex_dedup.json'
 LOGS = BASE_DIR / 'logs'
 CODEX_BIN = Path.home() / '.cursor' / 'extensions' / 'openai.chatgpt-26.325.31654-linux-x64' / 'bin' / 'linux-x86_64' / 'codex'
-WORKDIR = Path('/home/raul/CLAUDE/openclaw')
+WORKDIR = Path('/home/raul/Documents')
 
 
 def append_jsonl(path: Path, obj: dict):

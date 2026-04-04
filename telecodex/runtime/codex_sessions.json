@@ -1,6 +1,14 @@
 [
   {
     "alias": "C1",
+    "id": "019d5609-5bbb-7dd2-b676-06bcea36bdef",
+    "thread_name": "Explica uso del repo",
+    "updated_at": "2026-04-04T01:09:18.818573005Z",
+    "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T20-09-07-019d5609-5bbb-7dd2-b676-06bcea36bdef.jsonl",
+    "risky": false
+  },
+  {
+    "alias": "C2",
     "id": "019d5680-cb53-7c73-a189-6ccc314a2653",
     "thread_name": "Instala VS Code en Ubuntu",
     "updated_at": "2026-04-04T03:19:48.705669149Z",
@@ -8,20 +16,12 @@
     "risky": false
   },
   {
-    "alias": "C2",
+    "alias": "C3",
     "id": "019d54a3-c532-7232-b0b1-c9675378c31c",
     "thread_name": "Instala y valida OpenClaw",
     "updated_at": "2026-04-03T18:38:38.649646434Z",
     "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T13-38-32-019d54a3-c532-7232-b0b1-c9675378c31c.jsonl",
     "risky": true
-  },
-  {
-    "alias": "C3",
-    "id": "019d5609-5bbb-7dd2-b676-06bcea36bdef",
-    "thread_name": "Explica uso del repo",
-    "updated_at": "2026-04-04T01:09:18.818573005Z",
-    "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T20-09-07-019d5609-5bbb-7dd2-b676-06bcea36bdef.jsonl",
-    "risky": false
   },
   {
     "alias": "C4",
