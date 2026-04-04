@@ -127,7 +127,27 @@ cat runtime/inbox.jsonl
 python scripts/read_inbox.py
 ```
 
+### Convertir inbox de Telegram a archivo visible para Cursor
+
+```bash
+python scripts/sync_cursor_inbox.py
+bash scripts/open_cursor_inbox.sh
+```
+
+Esto vuelca los mensajes de `runtime/inbox.jsonl` a:
+
+- `.cursor-telegram/inbox.md`
+
+### Notificar estado manualmente
+
+```bash
+bash scripts/notify_status.sh progress 'Analizando archivo X'
+bash scripts/notify_status.sh waiting 'Necesito confirmación para cambiar config'
+bash scripts/notify_status.sh done 'Terminé la tarea'
+```
+
 La idea es simple:
 - cualquier proceso local escribe eventos en `events.jsonl`
 - el watcher los resume y los manda por Telegram
 - tus respuestas por Telegram se guardan en `inbox.jsonl`
+- `sync_cursor_inbox.py` las transforma en un archivo legible para Cursor
