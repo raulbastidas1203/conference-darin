@@ -1,122 +1,142 @@
 [
   {
     "alias": "C1",
-    "id": "019c3dc1-9754-7c00-a6e2-5be3d61a7212",
-    "thread_name": "Construir asistente local de recorda",
-    "updated_at": "2026-03-07T01:41:38.84091595Z"
+    "id": "019d560a-516c-70c1-b744-6fe487976457",
+    "thread_name": "Buscar SOTA loco-manipulación",
+    "updated_at": "2026-04-04T01:10:28.484647676Z",
+    "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T20-10-10-019d560a-516c-70c1-b744-6fe487976457.jsonl"
   },
   {
     "alias": "C2",
-    "id": "019c44c7-ecc5-7482-b33c-9e6846974533",
-    "thread_name": "Mover pestañas Codex",
-    "updated_at": "2026-03-07T01:41:38.842596887Z"
+    "id": "019d5609-5bbb-7dd2-b676-06bcea36bdef",
+    "thread_name": "Explica uso del repo",
+    "updated_at": "2026-04-04T01:09:18.818573005Z",
+    "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T20-09-07-019d5609-5bbb-7dd2-b676-06bcea36bdef.jsonl"
   },
   {
     "alias": "C3",
-    "id": "019c44de-db5a-77b0-a081-1a5db29448db",
-    "thread_name": "Redactar memo inversión Aaron",
-    "updated_at": "2026-03-07T01:41:38.844043869Z"
+    "id": "019d54a3-c532-7232-b0b1-c9675378c31c",
+    "thread_name": "Instala y valida OpenClaw",
+    "updated_at": "2026-04-03T18:38:38.649646434Z",
+    "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T13-38-32-019d54a3-c532-7232-b0b1-c9675378c31c.jsonl"
   },
   {
     "alias": "C4",
-    "id": "019c7876-b0b5-7123-be23-b33bed79eba8",
-    "thread_name": "Clonar repos y crear runbook xr",
-    "updated_at": "2026-03-07T01:41:38.845241913Z"
+    "id": "019d5145-6177-74e3-90ea-8009859f4102",
+    "thread_name": "Comparar agentes en Telegram",
+    "updated_at": "2026-04-03T02:56:43.987869015Z",
+    "file": "/home/raul/.codex/sessions/2026/04/02/rollout-2026-04-02T21-56-34-019d5145-6177-74e3-90ea-8009859f4102.jsonl"
   },
   {
     "alias": "C5",
-    "id": "019c78c9-f3f4-7712-9bc8-876fe94a97fc",
-    "thread_name": "Actualizar repo mediante git pull",
-    "updated_at": "2026-03-07T01:41:38.846722703Z"
+    "id": "019d49c6-8d0d-73d3-882f-696cc77d8cda",
+    "thread_name": "Identifica piezas azules y grises",
+    "updated_at": "2026-04-01T16:01:30.061830061Z",
+    "file": "/home/raul/.codex/sessions/2026/04/01/rollout-2026-04-01T11-00-42-019d49c6-8d0d-73d3-882f-696cc77d8cda.jsonl"
   },
   {
     "alias": "C6",
-    "id": "019c8ca2-62fa-7810-ac84-1e0966f6cb78",
-    "thread_name": "Instala Live Server para HTML",
-    "updated_at": "2026-03-07T01:41:38.847907689Z"
+    "id": "019d3668-b5df-7762-9193-a24c7e011c8e",
+    "thread_name": "Documenta pipeline de baile RL",
+    "updated_at": "2026-03-28T21:46:29.872620409Z",
+    "file": "/home/raul/.codex/sessions/2026/03/28/rollout-2026-03-28T16-45-25-019d3668-b5df-7762-9193-a24c7e011c8e.jsonl"
   },
   {
     "alias": "C7",
-    "id": "019c9010-a8f7-7f93-a901-f8633a2a1adf",
-    "thread_name": "Push cambios UCV a GitHub",
-    "updated_at": "2026-03-07T01:41:38.849239802Z"
+    "id": "019d30e6-fe13-7161-b324-1746ea120f4e",
+    "thread_name": "Clona e instala video2robot",
+    "updated_at": "2026-03-27T20:07:18.713427208Z",
+    "file": "/home/raul/.codex/sessions/2026/03/27/rollout-2026-03-27T15-05-37-019d30e6-fe13-7161-b324-1746ea120f4e.jsonl"
   },
   {
     "alias": "C8",
-    "id": "019c9048-9872-7e23-a811-196b517a7fe6",
-    "thread_name": "Explicar cómo ver videos locales",
-    "updated_at": "2026-03-07T01:41:38.850452444Z"
+    "id": "019d0bc6-f50c-7ff2-aff0-b87fd8f23c2f",
+    "thread_name": "Document G1 teach-repeat safeguards",
+    "updated_at": "2026-03-20T15:04:45.027103188Z",
+    "file": "/home/raul/.codex/sessions/2026/03/20/rollout-2026-03-20T10-04-41-019d0bc6-f50c-7ff2-aff0-b87fd8f23c2f.jsonl"
   },
   {
     "alias": "C9",
-    "id": "019c967f-73ad-7bd0-ba51-7e4555006a2f",
-    "thread_name": "Actualizar repo y pasar HTML v3 appt",
-    "updated_at": "2026-03-07T01:41:38.851640651Z"
+    "id": "019d0bc6-f4e5-7060-8362-db6b4d8f4f0c",
+    "thread_name": "Inspect G1 upper-body APIs",
+    "updated_at": "2026-03-20T15:04:45.093790659Z",
+    "file": "/home/raul/.codex/sessions/2026/03/20/rollout-2026-03-20T10-04-41-019d0bc6-f4e5-7060-8362-db6b4d8f4f0c.jsonl"
   },
   {
     "alias": "C10",
-    "id": "019cbbcb-08b0-7793-b38c-79156391820c",
-    "thread_name": "Revisa errores al clonar repo",
-    "updated_at": "2026-03-07T01:41:38.852846059Z"
+    "id": "019d0bc6-f4f1-7c13-98f3-7fcf37e1d6bf",
+    "thread_name": "Design upper-body recorder",
+    "updated_at": "2026-03-20T15:04:44.080828729Z",
+    "file": "/home/raul/.codex/sessions/2026/03/20/rollout-2026-03-20T10-04-41-019d0bc6-f4f1-7c13-98f3-7fcf37e1d6bf.jsonl"
   },
   {
     "alias": "C11",
-    "id": "019cc921-20b5-77a2-93e6-69c20c62868b",
-    "thread_name": "Planificar control MuJoCo XR Dex3",
-    "updated_at": "2026-03-07T16:31:42.364397279Z"
+    "id": "019d0bc6-f51a-7b31-ad64-da71acc66a2b",
+    "thread_name": "Define record replay test criteria",
+    "updated_at": "2026-03-20T15:04:44.084088907Z",
+    "file": "/home/raul/.codex/sessions/2026/03/20/rollout-2026-03-20T10-04-41-019d0bc6-f51a-7b31-ad64-da71acc66a2b.jsonl"
   },
   {
     "alias": "C12",
-    "id": "019cc976-e59c-7ac3-8150-6a99b0c78957",
-    "thread_name": "Configurar fork GR00T Meta Quest 3",
-    "updated_at": "2026-03-07T18:02:26.241545761Z"
+    "id": "019d0bc6-f4fe-7bf1-939d-7f2ad38b1dc1",
+    "thread_name": "Design upper-body replay engine",
+    "updated_at": "2026-03-20T15:04:43.515248422Z",
+    "file": "/home/raul/.codex/sessions/2026/03/20/rollout-2026-03-20T10-04-41-019d0bc6-f4fe-7bf1-939d-7f2ad38b1dc1.jsonl"
   },
   {
     "alias": "C13",
-    "id": "019ccb65-377b-7d93-bf91-60219679c121",
-    "thread_name": "Sube repositorio a GitHub",
-    "updated_at": "2026-03-08T03:03:04.293384182Z"
+    "id": "019d0bc6-f52f-7e71-a40b-42b5d03b8800",
+    "thread_name": "Design docs package for teach-repeat",
+    "updated_at": "2026-03-20T15:04:45.023892735Z",
+    "file": "/home/raul/.codex/sessions/2026/03/20/rollout-2026-03-20T10-04-41-019d0bc6-f52f-7e71-a40b-42b5d03b8800.jsonl"
   },
   {
     "alias": "C14",
-    "id": "019ccb99-bdf1-7a12-9f6e-95611550c937",
-    "thread_name": "Prepare repo for GitHub upload",
-    "updated_at": "2026-03-08T04:00:12.973004119Z"
+    "id": "019cfccd-153f-7d00-b955-d4d2519a6f0f",
+    "thread_name": "Escribe mapa del repo en docs",
+    "updated_at": "2026-03-17T17:17:07.054567491Z",
+    "file": "/home/raul/.codex/sessions/2026/03/17/rollout-2026-03-17T12-17-04-019cfccd-153f-7d00-b955-d4d2519a6f0f.jsonl"
   },
   {
     "alias": "C15",
-    "id": "019ce45f-8f1e-7fd0-8e40-dac0306669dc",
-    "thread_name": "Clona TWIST2 y sigue guía",
-    "updated_at": "2026-03-12T23:28:55.391656132Z"
+    "id": "019cfccc-2f0a-7972-97ac-01da5a81c179",
+    "thread_name": "Añadir exportación future-safe SDK2",
+    "updated_at": "2026-03-17T17:16:08.361402427Z",
+    "file": "/home/raul/.codex/sessions/2026/03/17/rollout-2026-03-17T12-16-05-019cfccc-2f0a-7972-97ac-01da5a81c179.jsonl"
   },
   {
     "alias": "C16",
-    "id": "019ce4c6-3241-7221-93a9-34d43b0cdc9d",
-    "thread_name": "Clona y prepara TWIST2 completo",
-    "updated_at": "2026-03-13T01:22:18.048519481Z"
+    "id": "019cfccb-f246-72f1-b586-47c3680b4e90",
+    "thread_name": "Implementar simulación Subagente 4",
+    "updated_at": "2026-03-17T17:15:52.586856904Z",
+    "file": "/home/raul/.codex/sessions/2026/03/17/rollout-2026-03-17T12-15-50-019cfccb-f246-72f1-b586-47c3680b4e90.jsonl"
   },
   {
     "alias": "C17",
-    "id": "019ce4fd-aa1e-72a0-a135-f97b4fbe5289",
-    "thread_name": "Clonar repo y preparar Quest 3",
-    "updated_at": "2026-03-13T02:23:41.413872853Z"
+    "id": "019cfccb-f23a-7662-b9d6-c13b233e6f93",
+    "thread_name": "Implementa modos adapta G1",
+    "updated_at": "2026-03-17T17:15:53.020366932Z",
+    "file": "/home/raul/.codex/sessions/2026/03/17/rollout-2026-03-17T12-15-50-019cfccb-f23a-7662-b9d6-c13b233e6f93.jsonl"
   },
   {
     "alias": "C18",
-    "id": "019ce7e4-d168-7372-8d27-45577b50b515",
-    "thread_name": "Clona e instala repo NVIDIA SONIC",
-    "updated_at": "2026-03-13T15:54:29.111342373Z"
+    "id": "019cfccb-f251-7823-a343-99d8656e0743",
+    "thread_name": "Implementar métricas clips y ranking",
+    "updated_at": "2026-03-17T17:15:52.641031373Z",
+    "file": "/home/raul/.codex/sessions/2026/03/17/rollout-2026-03-17T12-15-50-019cfccb-f251-7823-a343-99d8656e0743.jsonl"
   },
   {
     "alias": "C19",
-    "id": "019ce98e-564f-7110-a840-d98bd2c34acf",
-    "thread_name": "Habilita stream cámara Unitree G1",
-    "updated_at": "2026-03-13T23:35:51.492602217Z"
+    "id": "019cfccb-f22e-7422-8780-d609940dabca",
+    "thread_name": "Implementa loaders y mapping",
+    "updated_at": "2026-03-17T17:15:52.735680633Z",
+    "file": "/home/raul/.codex/sessions/2026/03/17/rollout-2026-03-17T12-15-50-019cfccb-f22e-7422-8780-d609940dabca.jsonl"
   },
   {
     "alias": "C20",
-    "id": "019ce9bd-d866-7bf1-be5b-0a7d46c9e556",
-    "thread_name": "Verifica instalación repo teleimager",
-    "updated_at": "2026-03-14T00:27:57.736359036Z"
+    "id": "019cfccb-7a64-7210-9d8d-cd9bb1dde2ba",
+    "thread_name": "Documentar estado y mapa del repo",
+    "updated_at": "2026-03-17T17:15:22.635532016Z",
+    "file": "/home/raul/.codex/sessions/2026/03/17/rollout-2026-03-17T12-15-19-019cfccb-7a64-7210-9d8d-cd9bb1dde2ba.jsonl"
   }
 ]

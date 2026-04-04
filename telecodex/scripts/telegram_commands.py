@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import json
+import subprocess
+import sys
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -8,6 +10,7 @@ INBOX = RUNTIME / 'inbox.jsonl'
 EVENTS = RUNTIME / 'events.jsonl'
 OUTBOX = RUNTIME / 'outbox.jsonl'
 CODEX_SESSIONS = RUNTIME / 'codex_sessions.json'
+SEND_CODEX = BASE_DIR / 'scripts' / 'send_codex_message.py'
 STATE = RUNTIME / 'command_state.json'
 
 
@@ -83,7 +86,12 @@ def handle_command(text: str):
             lines.append(f"- {s['alias']}: {s['thread_name']} ({s.get('updated_at','sin fecha')})")
         return '\n'.join(lines)
     if t.startswith('/codex '):
-        return 'Aún no implementé envío a una sesión concreta; por ahora ya puedo listar sesiones con /chats.'
+        parts = t.split(' ', 2)
+        if len(parts) < 3:
+            return 'Uso: /codex C1 tu mensaje'
+        alias = parts[1].strip().upper()
+        message = parts[2].strip()
+        return {'action': 'codex_send', 'alias': alias, 'message': message}
     return None
 
 
@@ -103,12 +111,20 @@ def main():
             continue
         text = item.get('text', '').strip()
         reply = handle_command(text)
-        if reply:
+        if isinstance(reply, str) and reply:
             append(OUTBOX, {
                 'kind': 'reply',
                 'chat_id': item.get('chat_id'),
                 'text': reply,
             })
+        elif isinstance(reply, dict) and reply.get('action') == 'codex_send':
+            subprocess.run([
+                sys.executable,
+                str(SEND_CODEX),
+                '--alias', reply['alias'],
+                '--text', reply['message'],
+                '--chat-id', str(item.get('chat_id')),
+            ], check=False)
         state['last_inbox_line'] += 1
     save_state(state)
 
