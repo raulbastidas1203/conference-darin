@@ -2,3 +2,6 @@
 {"ts": 1775268531, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 2, "text": "/start"}
 {"ts": 1775268531, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 3, "text": "Hola"}
 {"ts": 1775269201, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 8, "text": "Si lo veo bebe"}
+{"ts": 1775269862, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 9, "text": "/status"}
+{"ts": 1775269892, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 11, "text": "/last"}
+{"ts": 1775269904, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 13, "text": "/inbox"}

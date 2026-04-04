@@ -157,10 +157,36 @@ bash scripts/stop_telecodex.sh
 Esto deja corriendo en background:
 - `watcher.py`
 - `inbox_sync_loop.py`
+- `command_loop.py`
 
 Logs:
 - `logs/watcher.log`
 - `logs/inbox_sync.log`
+- `logs/command_loop.log`
+
+Comandos de Telegram soportados por ahora:
+- `/status`
+- `/inbox`
+- `/last`
+
+## Wrapper para registrar tareas reales
+
+Se añadió:
+- `scripts/run_task.py`
+- `scripts/demo_task.sh`
+
+Uso:
+
+```bash
+python3 scripts/run_task.py --label 'probar pwd' -- pwd
+python3 scripts/run_task.py --label 'listar archivos' -- ls -la
+bash scripts/demo_task.sh
+```
+
+Eso registra automáticamente en `runtime/events.jsonl`:
+- inicio de tarea
+- fin exitoso
+- o error con tail de stdout/stderr
 
 La idea es simple:
 - cualquier proceso local escribe eventos en `events.jsonl`
