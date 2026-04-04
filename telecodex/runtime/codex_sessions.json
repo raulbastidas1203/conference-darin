@@ -1,19 +1,19 @@
 [
   {
     "alias": "C1",
-    "id": "019d5609-5bbb-7dd2-b676-06bcea36bdef",
-    "thread_name": "Explica uso del repo",
-    "updated_at": "2026-04-04T01:09:18.818573005Z",
-    "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T20-09-07-019d5609-5bbb-7dd2-b676-06bcea36bdef.jsonl",
+    "id": "019d5680-cb53-7c73-a189-6ccc314a2653",
+    "thread_name": "Instala VS Code en Ubuntu",
+    "updated_at": "2026-04-04T03:19:48.705669149Z",
+    "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T22-19-34-019d5680-cb53-7c73-a189-6ccc314a2653.jsonl",
     "cwd": "/home/raul/Documents",
     "risky": false
   },
   {
     "alias": "C2",
-    "id": "019d5680-cb53-7c73-a189-6ccc314a2653",
-    "thread_name": "Instala VS Code en Ubuntu",
-    "updated_at": "2026-04-04T03:19:48.705669149Z",
-    "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T22-19-34-019d5680-cb53-7c73-a189-6ccc314a2653.jsonl",
+    "id": "019d5609-5bbb-7dd2-b676-06bcea36bdef",
+    "thread_name": "Explica uso del repo",
+    "updated_at": "2026-04-04T01:09:18.818573005Z",
+    "file": "/home/raul/.codex/sessions/2026/04/03/rollout-2026-04-03T20-09-07-019d5609-5bbb-7dd2-b676-06bcea36bdef.jsonl",
     "cwd": "/home/raul/Documents",
     "risky": false
   },

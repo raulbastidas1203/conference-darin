@@ -171,6 +171,7 @@ Comandos de Telegram soportados por ahora:
 - `/last`
 - `/chats`
 - `/codex C1 <mensaje>`
+- `/codexnew --cwd /ruta <mensaje>`
 
 Puedes registrar el menú de comandos del bot con:
 

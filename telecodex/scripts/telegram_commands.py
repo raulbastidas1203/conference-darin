@@ -14,6 +14,7 @@ OUTBOX = RUNTIME / 'outbox.jsonl'
 CODEX_SESSIONS = RUNTIME / 'codex_sessions.json'
 PENDING = RUNTIME / 'pending_codex_actions.json'
 SEND_CODEX = BASE_DIR / 'scripts' / 'send_codex_message.py'
+SEND_CODEX_FRESH = BASE_DIR / 'scripts' / 'send_codex_fresh.py'
 STATE = RUNTIME / 'command_state.json'
 
 
@@ -98,7 +99,8 @@ def handle_command(text: str):
             '- /inbox: últimos mensajes recibidos\n'
             '- /last: último evento\n'
             '- /chats: sesiones Codex recientes\n'
-            '- /codex C1 <mensaje>: envía un mensaje a una sesión Codex\n\n'
+            '- /codex C1 <mensaje>: envía un mensaje a una sesión Codex\n'
+            '- /codexnew --cwd /ruta <mensaje>: usa una sesión fresca con cwd controlado\n\n'
             'Tip: evita sesiones marcadas como [riesgoso] en /chats.'
         )
 
@@ -141,6 +143,19 @@ def handle_command(text: str):
 
     if n in ('no', 'cancelar', 'cancela'):
         return {'action': 'codex_cancel'}
+
+    if t.startswith('/codexnew '):
+        body = t[len('/codexnew '):].strip()
+        if not body.startswith('--cwd '):
+            return 'Uso: /codexnew --cwd /ruta tu mensaje'
+        try:
+            rest = body[6:]
+            forced_cwd, message = rest.split(' ', 1)
+            forced_cwd = forced_cwd.strip()
+            message = message.strip()
+        except ValueError:
+            return 'Uso: /codexnew --cwd /ruta tu mensaje'
+        return {'action': 'codexnew_prepare', 'message': message, 'cwd': forced_cwd}
 
     if t.startswith('/codex '):
         parts = t.split(' ', 2)
@@ -190,6 +205,21 @@ def main():
                 'chat_id': item.get('chat_id'),
                 'text': reply,
             })
+        elif isinstance(reply, dict) and reply.get('action') == 'codexnew_prepare':
+            pending = load_pending()
+            chat_id = str(item.get('chat_id'))
+            pending[chat_id] = {
+                'kind': 'fresh',
+                'message': reply['message'],
+                'cwd': reply['cwd'],
+            }
+            save_pending(pending)
+            append(OUTBOX, {
+                'kind': 'reply',
+                'chat_id': chat_id,
+                'text': f"Codex fresh usará este directorio:\n{reply['cwd']}\n\nResponde 'sí' para continuar o 'no' para cancelar.",
+                'keyboard': [['Sí', 'No']],
+            })
         elif isinstance(reply, dict) and reply.get('action') == 'codex_prepare':
             pending = load_pending()
             chat_id = str(item.get('chat_id'))
@@ -216,14 +246,23 @@ def main():
                     'text': 'Procesando...',
                     'store_as': f'processing:{chat_id}',
                 })
-                subprocess.run([
-                    sys.executable,
-                    str(SEND_CODEX),
-                    '--alias', action['alias'],
-                    '--text', action['message'],
-                    '--chat-id', chat_id,
-                    '--cwd', action['cwd'],
-                ], check=False)
+                if action.get('kind') == 'fresh':
+                    subprocess.run([
+                        sys.executable,
+                        str(SEND_CODEX_FRESH),
+                        '--text', action['message'],
+                        '--chat-id', chat_id,
+                        '--cwd', action['cwd'],
+                    ], check=False)
+                else:
+                    subprocess.run([
+                        sys.executable,
+                        str(SEND_CODEX),
+                        '--alias', action['alias'],
+                        '--text', action['message'],
+                        '--chat-id', chat_id,
+                        '--cwd', action['cwd'],
+                    ], check=False)
                 pending.pop(chat_id, None)
                 save_pending(pending)
             else:

@@ -37,3 +37,9 @@
 {"ts": 1775275218, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 77, "text": "/chats"}
 {"ts": 1775275297, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 79, "text": "/codex C1 --cwd /home/raul/Documents crea un archivo test.md"}
 {"ts": 1775275309, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 81, "text": "Sí"}
+{"ts": 1775276253, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 83, "text": "/codex C2 --cwd /home/raul/Documents responde solo pong"}
+{"ts": 1775276336, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 85, "text": "si"}
+{"ts": 1775277143, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 88, "text": "/codex C1 --cwd /home/raul/Documents crea una carpeta \"test\" , crea un archivo test.md dentro, y debe decir  \"pong\""}
+{"ts": 1775277158, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 90, "text": "si"}
+{"ts": 1775277226, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 93, "text": "/codex c1 elimina esa carpeta que acabas de crear"}
+{"ts": 1775277263, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 95, "text": "si"}
