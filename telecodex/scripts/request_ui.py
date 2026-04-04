@@ -35,6 +35,34 @@ def maybe_json(value):
     return value
 
 
+def send_question(chat_id: str, alias: str, state: dict):
+    idx = state.get('current_index', 0)
+    questions = state.get('questions', [])
+    if idx >= len(questions):
+        answers = state.get('answers', [])
+        lines = [f'{alias} · respuestas capturadas:']
+        for ans in answers:
+            lines.append(f"- {ans['header']}: {ans['label']}")
+            if ans.get('description'):
+                lines.append(f"  {ans['description']}")
+        append({'kind': 'reply', 'chat_id': chat_id, 'text': '\n'.join(lines)[:3500]})
+        return
+
+    q = questions[idx]
+    header = q.get('header') or f'Pregunta {idx+1}'
+    question = q.get('question') or q.get('prompt') or 'Sin pregunta visible'
+    lines = [f'{alias} necesita tu respuesta.', '', f'{header}', question, '']
+    keyboard = []
+    for opt in q.get('options', []):
+        label = opt.get('label') or opt.get('value') or 'Opción'
+        desc = opt.get('description') or ''
+        lines.append(f'- {label}')
+        if desc:
+            lines.append(f'  {desc}')
+        keyboard.append([label])
+    append({'kind': 'reply', 'chat_id': chat_id, 'text': '\n'.join(lines)[:3500], 'keyboard': keyboard if keyboard else None})
+
+
 def emit_request(chat_id: str, alias: str, raw_text: str):
     payload = maybe_json(raw_text)
     if isinstance(payload, dict) and 'arguments' in payload:
@@ -48,40 +76,32 @@ def emit_request(chat_id: str, alias: str, raw_text: str):
         append({'kind': 'reply', 'chat_id': chat_id, 'text': f'{alias} te está pidiendo respuesta, pero no encontré preguntas estructuradas.\n\n{json.dumps(payload, ensure_ascii=False)[:1800]}'} )
         return
 
-    pending = load_pending()
-    all_buttons = []
-    text_blocks = [f'{alias} necesita tu respuesta.']
-    first_question_options = []
-
-    for idx, q in enumerate(questions, start=1):
-        header = q.get('header') or f'Pregunta {idx}'
-        question = q.get('question') or q.get('prompt') or 'Sin pregunta visible'
-        text_blocks.append('')
-        text_blocks.append(f'{header}')
-        text_blocks.append(question)
-        options = []
+    normalized = []
+    for q in questions:
+        opts = []
         for opt in q.get('options', []):
-            label = opt.get('label') or opt.get('value') or 'Opción'
-            desc = opt.get('description') or ''
-            value = opt.get('value') or label
-            text_blocks.append(f'- {label}')
-            if desc:
-                text_blocks.append(f'  {desc}')
-            options.append({'label': label, 'value': value, 'description': desc})
-        if idx == 1:
-            first_question_options = options
+            opts.append({
+                'label': opt.get('label') or opt.get('value') or 'Opción',
+                'value': opt.get('value') or opt.get('label') or 'Opción',
+                'description': opt.get('description') or '',
+            })
+        normalized.append({
+            'header': q.get('header') or 'Pregunta',
+            'id': q.get('id'),
+            'question': q.get('question') or q.get('prompt') or 'Sin pregunta visible',
+            'options': opts,
+        })
 
-    for opt in first_question_options:
-        all_buttons.append([opt['label']])
-
+    pending = load_pending()
     pending[str(chat_id)] = {
         'alias': alias,
-        'questions': questions,
-        'options': first_question_options,
+        'questions': normalized,
+        'current_index': 0,
+        'answers': [],
         'raw': payload,
     }
     save_pending(pending)
-    append({'kind': 'reply', 'chat_id': chat_id, 'text': '\n'.join(text_blocks)[:3500], 'keyboard': all_buttons if all_buttons else None})
+    send_question(chat_id, alias, pending[str(chat_id)])
 
 
 if __name__ == '__main__':

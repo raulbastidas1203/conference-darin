@@ -242,21 +242,48 @@ def main():
         pending_ui = load_pending_ui()
         ui = pending_ui.get(chat_id)
         if ui:
-            selected = None
-            for opt in ui.get('options', []):
-                if text.strip() == opt.get('label'):
-                    selected = opt
-                    break
-            if selected:
-                append(OUTBOX, {
-                    'kind': 'reply',
-                    'chat_id': chat_id,
-                    'text': f"Elegiste: {selected['label']}\n\nDescripción: {selected.get('description') or '-'}\nValor: {selected.get('value')}\n\nAún falta reenviar esta opción al hilo correcto de Codex.",
-                })
-                pending_ui.pop(chat_id, None)
-                save_pending_ui(pending_ui)
-                state['last_inbox_line'] += 1
-                continue
+            idx = ui.get('current_index', 0)
+            questions = ui.get('questions', [])
+            if idx < len(questions):
+                selected = None
+                current_q = questions[idx]
+                for opt in current_q.get('options', []):
+                    if text.strip() == opt.get('label'):
+                        selected = opt
+                        break
+                if selected:
+                    ui.setdefault('answers', []).append({
+                        'header': current_q.get('header'),
+                        'id': current_q.get('id'),
+                        'label': selected.get('label'),
+                        'value': selected.get('value'),
+                        'description': selected.get('description'),
+                    })
+                    ui['current_index'] = idx + 1
+                    pending_ui[chat_id] = ui
+                    save_pending_ui(pending_ui)
+                    if ui['current_index'] < len(questions):
+                        next_q = questions[ui['current_index']]
+                        lines = [f"Siguiente pregunta ({ui['current_index']+1}/{len(questions)}):", '', next_q.get('header') or 'Pregunta', next_q.get('question') or '', '']
+                        keyboard = []
+                        for opt in next_q.get('options', []):
+                            lines.append(f"- {opt['label']}")
+                            if opt.get('description'):
+                                lines.append(f"  {opt['description']}")
+                            keyboard.append([opt['label']])
+                        append(OUTBOX, {'kind': 'reply', 'chat_id': chat_id, 'text': '\n'.join(lines)[:3500], 'keyboard': keyboard})
+                    else:
+                        lines = [f"Respuestas capturadas para {ui.get('alias')}:\n"]
+                        for ans in ui.get('answers', []):
+                            lines.append(f"- {ans['header']}: {ans['label']}")
+                            if ans.get('description'):
+                                lines.append(f"  {ans['description']}")
+                        lines.append('\nAún falta reenviar este paquete de respuestas al hilo correcto de Codex.')
+                        append(OUTBOX, {'kind': 'reply', 'chat_id': chat_id, 'text': '\n'.join(lines)[:3500]})
+                        pending_ui.pop(chat_id, None)
+                        save_pending_ui(pending_ui)
+                    state['last_inbox_line'] += 1
+                    continue
         reply = handle_command(text)
         if isinstance(reply, str) and reply:
             append(OUTBOX, {
