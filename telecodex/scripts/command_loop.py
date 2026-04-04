@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[1]
+LIST_SCRIPT = BASE_DIR / 'scripts' / 'list_codex_sessions.py'
 CMD_SCRIPT = BASE_DIR / 'scripts' / 'telegram_commands.py'
 
 
@@ -15,6 +16,7 @@ def main():
     args = p.parse_args()
     while True:
         try:
+            subprocess.run([sys.executable, str(LIST_SCRIPT)], check=False)
             subprocess.run([sys.executable, str(CMD_SCRIPT)], check=False)
         except KeyboardInterrupt:
             break

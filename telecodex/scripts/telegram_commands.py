@@ -7,6 +7,7 @@ RUNTIME = BASE_DIR / 'runtime'
 INBOX = RUNTIME / 'inbox.jsonl'
 EVENTS = RUNTIME / 'events.jsonl'
 OUTBOX = RUNTIME / 'outbox.jsonl'
+CODEX_SESSIONS = RUNTIME / 'codex_sessions.json'
 STATE = RUNTIME / 'command_state.json'
 
 
@@ -42,6 +43,15 @@ def append(path: Path, obj: dict):
         f.write(json.dumps(obj, ensure_ascii=False) + '\n')
 
 
+def load_codex_sessions():
+    if not CODEX_SESSIONS.exists():
+        return []
+    try:
+        return json.loads(CODEX_SESSIONS.read_text(encoding='utf-8'))
+    except Exception:
+        return []
+
+
 def handle_command(text: str):
     t = text.strip()
     if t == '/status':
@@ -64,6 +74,16 @@ def handle_command(text: str):
             return 'No hay eventos recientes.'
         ev = events[-1]
         return f"Último evento: {ev.get('type','event')} - {ev.get('text', ev.get('raw',''))}"
+    if t == '/chats':
+        sessions = load_codex_sessions()
+        if not sessions:
+            return 'No encontré sesiones de Codex indexadas.'
+        lines = ['Sesiones Codex recientes:']
+        for s in sessions[:8]:
+            lines.append(f"- {s['alias']}: {s['thread_name']} ({s.get('updated_at','sin fecha')})")
+        return '\n'.join(lines)
+    if t.startswith('/codex '):
+        return 'Aún no implementé envío a una sesión concreta; por ahora ya puedo listar sesiones con /chats.'
     return None
 
 

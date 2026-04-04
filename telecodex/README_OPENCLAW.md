@@ -168,6 +168,7 @@ Comandos de Telegram soportados por ahora:
 - `/status`
 - `/inbox`
 - `/last`
+- `/chats`
 
 ## Wrapper para registrar tareas reales
 
