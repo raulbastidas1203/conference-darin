@@ -211,8 +211,9 @@ def main():
     state = load_state()
 
     while True:
-        process_events(state, token, chat_id)
         process_updates(state, token, chat_id)
+        process_outbox(state, token)
+        process_events(state, token, chat_id)
         process_outbox(state, token)
         save_state(state)
         if args.once:
