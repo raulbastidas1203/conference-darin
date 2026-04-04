@@ -68,13 +68,15 @@ def extract_tail_events(file_path: Path, start_line: int):
             if ptype in ('custom_tool_call', 'function_call'):
                 name = payload.get('name') or payload.get('namespace') or 'tool'
                 raw = json.dumps(payload, ensure_ascii=False)
-                if any(k in raw.lower() for k in ['approve', 'approval', 'confirm', 'run this command', 'allow once', 'permission']):
+                low = raw.lower()
+                if any(k in low for k in ['do you want to run this command', 'allow once', 'waiting for approval', 'requested approval', 'needs approval']):
                     events.append({'kind': 'needs_decision', 'name': name, 'raw': raw[:1600], 'timestamp': obj.get('timestamp')})
                 else:
                     events.append({'kind': 'tool_call', 'name': name, 'timestamp': obj.get('timestamp')})
             elif ptype == 'message':
                 raw = json.dumps(payload, ensure_ascii=False)
-                if any(k in raw.lower() for k in ['approve', 'approval', 'confirm', 'run this command', 'allow once', 'permission']):
+                low = raw.lower()
+                if any(k in low for k in ['do you want to run this command', 'allow once', 'waiting for approval', 'requested approval', 'needs approval']):
                     events.append({'kind': 'needs_decision', 'name': 'message', 'raw': raw[:1600], 'timestamp': obj.get('timestamp')})
     return {'events': events, 'line_count': len(lines), 'last_completed': last_completed}
 

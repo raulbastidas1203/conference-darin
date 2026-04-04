@@ -97,6 +97,8 @@ def send_message(token, chat_id, text, keyboard=None):
             'resize_keyboard': True,
             'one_time_keyboard': True,
         }, ensure_ascii=False)
+    else:
+        params['reply_markup'] = json.dumps({'remove_keyboard': True}, ensure_ascii=False)
     try:
         return tg_api(token, 'sendMessage', http_method='post', **params)
     except Exception:
