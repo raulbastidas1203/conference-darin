@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import json
+import re
 import subprocess
 import sys
+import unicodedata
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -76,8 +78,17 @@ def save_pending(data):
     PENDING.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
 
 
+def normalize_text(text: str) -> str:
+    lowered = text.strip().lower()
+    normalized = unicodedata.normalize('NFD', lowered)
+    normalized = ''.join(ch for ch in normalized if unicodedata.category(ch) != 'Mn')
+    normalized = re.sub(r'\s+', ' ', normalized).strip()
+    return normalized
+
+
 def handle_command(text: str):
     t = text.strip()
+    n = normalize_text(text)
     if t in ('/help', '/start'):
         return (
             'Comandos disponibles:\n'
@@ -110,6 +121,21 @@ def handle_command(text: str):
         ev = events[-1]
         return f"Último evento: {ev.get('type','event')} - {ev.get('text', ev.get('raw',''))}"
     if t == '/chats':
+         sessions = load_codex_sessions()
+         if not sessions:
+             return 'No encontré sesiones de Codex indexadas.'
+         lines = ['Sesiones Codex recientes:']
+         for s in sessions[:8]:
+             badge = ' [riesgoso]' if s.get('risky') else ''
+-            lines.append(f"- {s['alias']}: {s['thread_name']}{badge} ({s.get('updated_at','sin fecha')})")
++            cwd = s.get('cwd') or 'cwd desconocido'
++            lines.append(f"- {s['alias']}: {s['thread_name']}{badge} | {cwd} | {s.get('updated_at','sin fecha')}")
+         return '\n'.join(lines)
+-    if t in ('si', 'sí', 'confirmo', 'ok'):
++    if n in ('si', 'confirmo', 'ok', 'dale'):
+         return {'action': 'codex_confirm'}
++    if n in ('no', 'cancelar', 'cancela'):
++        return {'action': 'codex_cancel'}
         sessions = load_codex_sessions()
         if not sessions:
             return 'No encontré sesiones de Codex indexadas.'
@@ -159,6 +185,47 @@ def main():
                 'text': reply,
             })
         elif isinstance(reply, dict) and reply.get('action') == 'codex_prepare':
+             pending = load_pending()
+             chat_id = str(item.get('chat_id'))
+             pending[chat_id] = {
+                 'alias': reply['alias'],
+                 'message': reply['message'],
+                 'cwd': reply['cwd'],
+             }
+             save_pending(pending)
+             append(OUTBOX, {
+                 'kind': 'reply',
+                 'chat_id': chat_id,
+-                'text': f"La sesión {reply['alias']} usará este directorio:\n{reply['cwd']}\n\nResponde 'sí' para continuar.",
++                'text': f"La sesión {reply['alias']} usará este directorio:\n{reply['cwd']}\n\nResponde 'sí' para continuar o 'no' para cancelar.",
++                'keyboard': [['Sí', 'No']],
+             })
+         elif isinstance(reply, dict) and reply.get('action') == 'codex_confirm':
+             pending = load_pending()
+             chat_id = str(item.get('chat_id'))
+             action = pending.get(chat_id)
+@@
+                 append(OUTBOX, {
+                     'kind': 'reply',
+                     'chat_id': chat_id,
+                     'text': 'No tengo ninguna acción pendiente para confirmar.',
+                 })
++        elif isinstance(reply, dict) and reply.get('action') == 'codex_cancel':
++            pending = load_pending()
++            chat_id = str(item.get('chat_id'))
++            if pending.pop(chat_id, None) is not None:
++                save_pending(pending)
++                append(OUTBOX, {
++                    'kind': 'reply',
++                    'chat_id': chat_id,
++                    'text': 'Acción cancelada.',
++                })
++            else:
++                append(OUTBOX, {
++                    'kind': 'reply',
++                    'chat_id': chat_id,
++                    'text': 'No tengo ninguna acción pendiente para cancelar.',
++                })
             pending = load_pending()
             chat_id = str(item.get('chat_id'))
             pending[chat_id] = {

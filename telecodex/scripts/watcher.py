@@ -84,11 +84,18 @@ def tg_api(token, method, **params):
     return r.json()
 
 
-def send_message(token, chat_id, text):
+def send_message(token, chat_id, text, keyboard=None):
     if not token or not chat_id:
         return None
+    params = {'chat_id': chat_id, 'text': text}
+    if keyboard:
+        params['reply_markup'] = json.dumps({
+            'keyboard': keyboard,
+            'resize_keyboard': True,
+            'one_time_keyboard': True,
+        }, ensure_ascii=False)
     try:
-        return tg_api(token, 'sendMessage', chat_id=chat_id, text=text)
+        return tg_api(token, 'sendMessage', **params)
     except Exception:
         return None
 
@@ -194,8 +201,9 @@ def process_outbox(state, token):
             continue
         chat_id = item.get('chat_id')
         text = item.get('text')
+        keyboard = item.get('keyboard')
         if chat_id and text:
-            send_message(token, chat_id, text)
+            send_message(token, chat_id, text, keyboard=keyboard)
             sent += 1
         state['last_outbox_line'] = state.get('last_outbox_line', 0) + 1
     return sent
