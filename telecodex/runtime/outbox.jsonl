@@ -51,3 +51,9 @@
 {"kind": "reply", "chat_id": "1452407191", "text": "C1 recibió un nuevo prompt y empezó a trabajar."}
 {"kind": "reply", "chat_id": "1452407191", "text": "C1 · progreso:\n\nNo puedo mostrar ese recuadro interactivo aquí. Responde solo `Keiko Fujimori` o `Rafael López Aliaga` y creo el `.md`."}
 {"kind": "reply", "chat_id": "1452407191", "text": "C1 terminó de trabajar.\n\nRespuesta final:\nNo puedo mostrar ese recuadro interactivo aquí. Responde solo `Keiko Fujimori` o `Rafael López Aliaga` y creo el `.md`."}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 recibió un nuevo prompt y empezó a trabajar."}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 · progreso:\n\nVoy a hacer una pasada corta de contexto local primero y luego te planteo 2 o 3 decisiones que sí cambian el plan, para dejar un método útil y no algo genérico."}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 está usando: exec_command"}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 está usando: exec_command"}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 · progreso:\n\nYa confirmé que no hay contexto local que cambie esto; la decisión depende de tus criterios, no del entorno. Necesito fijar tres preferencias que sí cambian el método para que el plan no quede ambiguo."}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 está usando: request_user_input"}
