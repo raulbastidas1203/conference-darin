@@ -57,3 +57,7 @@
 {"kind": "reply", "chat_id": "1452407191", "text": "C1 está usando: exec_command"}
 {"kind": "reply", "chat_id": "1452407191", "text": "C1 · progreso:\n\nYa confirmé que no hay contexto local que cambie esto; la decisión depende de tus criterios, no del entorno. Necesito fijar tres preferencias que sí cambian el método para que el plan no quede ambiguo."}
 {"kind": "reply", "chat_id": "1452407191", "text": "C1 está usando: request_user_input"}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 recibió un nuevo prompt y empezó a trabajar."}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 recibió un nuevo prompt y empezó a trabajar."}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 · progreso:\n\nVoy a fijar tres criterios que sí cambian el método, para que el plan salga corto pero útil y no genérico."}
+{"kind": "reply", "chat_id": "1452407191", "text": "C1 está usando: request_user_input"}

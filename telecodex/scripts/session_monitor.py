@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import json
-import time
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[1]
@@ -69,7 +68,10 @@ def extract_tail_events(file_path: Path, start_line: int):
                 name = payload.get('name') or payload.get('namespace') or 'tool'
                 raw = json.dumps(payload, ensure_ascii=False)
                 low = raw.lower()
-                if any(k in low for k in ['do you want to run this command', 'allow once', 'waiting for approval', 'requested approval', 'needs approval']):
+                if str(name).lower() == 'request_user_input':
+                    question = payload.get('arguments') or raw
+                    events.append({'kind': 'needs_user_reply', 'name': name, 'raw': str(question)[:1600], 'timestamp': obj.get('timestamp')})
+                elif any(k in low for k in ['do you want to run this command', 'allow once', 'waiting for approval', 'requested approval', 'needs approval']):
                     events.append({'kind': 'needs_decision', 'name': name, 'raw': raw[:1600], 'timestamp': obj.get('timestamp')})
                 else:
                     events.append({'kind': 'tool_call', 'name': name, 'timestamp': obj.get('timestamp')})
@@ -106,6 +108,8 @@ def tick():
                 append(OUTBOX, {'kind': 'reply', 'chat_id': chat_id, 'text': f'{alias} está usando: {ev["name"]}'})
             elif ev['kind'] == 'needs_decision':
                 append(OUTBOX, {'kind': 'reply', 'chat_id': chat_id, 'text': f'{alias} está esperando una decisión o aprobación.\n\nDetalle:\n{ev["raw"][:1400]}'})
+            elif ev['kind'] == 'needs_user_reply':
+                append(OUTBOX, {'kind': 'reply', 'chat_id': chat_id, 'text': f'{alias} te está pidiendo respuesta.\n\nPregunta / opciones:\n{ev["raw"][:1400]}\n\nRespóndeme aquí y luego conectamos esa respuesta al hilo.'})
             elif ev['kind'] == 'task_complete':
                 mon['last_completed'] = ev.get('timestamp')
                 changed = True
