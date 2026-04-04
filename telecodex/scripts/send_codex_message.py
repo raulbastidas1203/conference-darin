@@ -13,7 +13,18 @@ EVENTS = RUNTIME / 'events.jsonl'
 OUTBOX = RUNTIME / 'outbox.jsonl'
 DEDUP = RUNTIME / 'codex_dedup.json'
 LOGS = BASE_DIR / 'logs'
-CODEX_BIN = Path.home() / '.cursor' / 'extensions' / 'openai.chatgpt-26.325.31654-linux-x64' / 'bin' / 'linux-x86_64' / 'codex'
+def find_codex_bin():
+    candidates = [
+        Path.home() / '.vscode' / 'extensions' / 'openai.chatgpt-26.5401.11717-linux-x64' / 'bin' / 'linux-x86_64' / 'codex',
+        Path.home() / '.cursor' / 'extensions' / 'openai.chatgpt-26.325.31654-linux-x64' / 'bin' / 'linux-x86_64' / 'codex',
+    ]
+    for p in candidates:
+        if p.exists():
+            return p
+    return candidates[0]
+
+
+CODEX_BIN = find_codex_bin()
 DEFAULT_WORKDIR = Path('/home/raul/CLAUDE/openclaw')
 
 

@@ -245,7 +245,7 @@ def main():
                     recent_msgs = []
                     for raw in reversed(data[-120:]):
                         obj = json.loads(raw)
-                        if obj.get('type') == 'event_msg' and (obj.get('payload') or {}).get('type') == 'turn_completed' and not last_completed:
+                        if obj.get('type') == 'event_msg' and (obj.get('payload') or {}).get('type') in ('turn_completed', 'task_complete') and not last_completed:
                             last_completed = obj.get('timestamp')
                         if obj.get('type') == 'event_msg' and (obj.get('payload') or {}).get('type') == 'agent_message':
                             msg = (obj.get('payload') or {}).get('message')

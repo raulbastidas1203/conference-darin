@@ -53,7 +53,7 @@ def extract_last_status(file_path: Path):
             continue
         t = obj.get('type')
         payload = obj.get('payload') or {}
-        if t == 'event_msg' and payload.get('type') == 'turn_completed' and not last_completed:
+        if t == 'event_msg' and payload.get('type') in ('turn_completed', 'task_complete') and not last_completed:
             last_completed = obj.get('timestamp')
         if t == 'event_msg' and payload.get('type') == 'agent_message':
             msg = payload.get('message')
