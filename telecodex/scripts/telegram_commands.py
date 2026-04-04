@@ -10,6 +10,7 @@ INBOX = RUNTIME / 'inbox.jsonl'
 EVENTS = RUNTIME / 'events.jsonl'
 OUTBOX = RUNTIME / 'outbox.jsonl'
 CODEX_SESSIONS = RUNTIME / 'codex_sessions.json'
+PENDING = RUNTIME / 'pending_codex_actions.json'
 SEND_CODEX = BASE_DIR / 'scripts' / 'send_codex_message.py'
 STATE = RUNTIME / 'command_state.json'
 
@@ -62,6 +63,19 @@ def resolve_codex_session(alias: str):
     return None
 
 
+def load_pending():
+    if PENDING.exists():
+        try:
+            return json.loads(PENDING.read_text(encoding='utf-8'))
+        except Exception:
+            pass
+    return {}
+
+
+def save_pending(data):
+    PENDING.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+
+
 def handle_command(text: str):
     t = text.strip()
     if t in ('/help', '/start'):
@@ -104,6 +118,8 @@ def handle_command(text: str):
             badge = ' [riesgoso]' if s.get('risky') else ''
             lines.append(f"- {s['alias']}: {s['thread_name']}{badge} ({s.get('updated_at','sin fecha')})")
         return '\n'.join(lines)
+    if t in ('si', 'sí', 'confirmo', 'ok'):
+        return {'action': 'codex_confirm'}
     if t.startswith('/codex '):
         parts = t.split(' ', 2)
         if len(parts) < 3:
@@ -115,7 +131,8 @@ def handle_command(text: str):
             return f'No encontré la sesión {alias}. Usa /chats.'
         if sess.get('risky'):
             return f'Bloqueé {alias} porque parece una sesión sensible del bridge/setup. Usa otra sesión.'
-        return {'action': 'codex_send', 'alias': alias, 'message': message}
+        cwd = sess.get('cwd') or '(cwd no detectado)'
+        return {'action': 'codex_prepare', 'alias': alias, 'message': message, 'cwd': cwd}
     return None
 
 
@@ -141,14 +158,41 @@ def main():
                 'chat_id': item.get('chat_id'),
                 'text': reply,
             })
-        elif isinstance(reply, dict) and reply.get('action') == 'codex_send':
-            subprocess.run([
-                sys.executable,
-                str(SEND_CODEX),
-                '--alias', reply['alias'],
-                '--text', reply['message'],
-                '--chat-id', str(item.get('chat_id')),
-            ], check=False)
+        elif isinstance(reply, dict) and reply.get('action') == 'codex_prepare':
+            pending = load_pending()
+            chat_id = str(item.get('chat_id'))
+            pending[chat_id] = {
+                'alias': reply['alias'],
+                'message': reply['message'],
+                'cwd': reply['cwd'],
+            }
+            save_pending(pending)
+            append(OUTBOX, {
+                'kind': 'reply',
+                'chat_id': chat_id,
+                'text': f"La sesión {reply['alias']} usará este directorio:\n{reply['cwd']}\n\nResponde 'sí' para continuar.",
+            })
+        elif isinstance(reply, dict) and reply.get('action') == 'codex_confirm':
+            pending = load_pending()
+            chat_id = str(item.get('chat_id'))
+            action = pending.get(chat_id)
+            if action:
+                subprocess.run([
+                    sys.executable,
+                    str(SEND_CODEX),
+                    '--alias', action['alias'],
+                    '--text', action['message'],
+                    '--chat-id', chat_id,
+                    '--cwd', action['cwd'],
+                ], check=False)
+                pending.pop(chat_id, None)
+                save_pending(pending)
+            else:
+                append(OUTBOX, {
+                    'kind': 'reply',
+                    'chat_id': chat_id,
+                    'text': 'No tengo ninguna acción pendiente para confirmar.',
+                })
         state['last_inbox_line'] += 1
     save_state(state)
 

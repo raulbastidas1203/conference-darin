@@ -14,7 +14,7 @@ OUTBOX = RUNTIME / 'outbox.jsonl'
 DEDUP = RUNTIME / 'codex_dedup.json'
 LOGS = BASE_DIR / 'logs'
 CODEX_BIN = Path.home() / '.cursor' / 'extensions' / 'openai.chatgpt-26.325.31654-linux-x64' / 'bin' / 'linux-x86_64' / 'codex'
-WORKDIR = Path('/home/raul/Documents')
+DEFAULT_WORKDIR = Path('/home/raul/CLAUDE/openclaw')
 
 
 def append_jsonl(path: Path, obj: dict):
@@ -58,6 +58,7 @@ def main():
     p.add_argument('--alias', required=True)
     p.add_argument('--text', required=True)
     p.add_argument('--chat-id', required=True)
+    p.add_argument('--cwd')
     args = p.parse_args()
 
     sess = resolve_session(args.alias)
@@ -70,6 +71,7 @@ def main():
 
     session_id = sess['id']
     thread_name = sess.get('thread_name', session_id)
+    workdir = Path(args.cwd) if args.cwd else Path(sess.get('cwd') or DEFAULT_WORKDIR)
     dedup = load_dedup()
     dedup_key = f"{args.chat_id}|{args.alias}|{args.text.strip()}"
     if dedup.get(dedup_key):
@@ -85,7 +87,7 @@ def main():
     output_file = LOGS / f'codex-last-{session_id}.txt'
     cmd = [
         str(CODEX_BIN),
-        '-C', str(WORKDIR),
+        '-C', str(workdir),
         'exec', 'resume', session_id, '-',
         '--json',
         '--dangerously-bypass-approvals-and-sandbox',

@@ -50,12 +50,24 @@ def load_index_sessions():
         risky = any(k in lowered for k in [
             'telecodex', 'telegram', 'cursor-codex', 'openclaw', 'bridge', 'watcher'
         ])
+        cwd = None
+        if file_path and file_path.exists():
+            try:
+                first_lines = file_path.read_text(encoding='utf-8', errors='replace').splitlines()[:5]
+                for raw in first_lines:
+                    item2 = json.loads(raw)
+                    if item2.get('type') == 'session_meta':
+                        cwd = ((item2.get('payload') or {}).get('cwd'))
+                        break
+            except Exception:
+                cwd = None
         rows.append({
             'id': session_id,
             'thread_name': thread_name,
             'updated_at': updated_at,
             'updated_ts': max(updated_ts, file_mtime),
             'file': str(file_path) if file_path else None,
+            'cwd': cwd,
             'risky': risky,
         })
     rows.sort(key=lambda x: x.get('updated_ts', 0.0), reverse=True)
@@ -72,6 +84,7 @@ def main():
             'thread_name': s['thread_name'],
             'updated_at': s['updated_at'],
             'file': s['file'],
+            'cwd': s.get('cwd'),
             'risky': s.get('risky', False),
         })
     OUT.parent.mkdir(parents=True, exist_ok=True)

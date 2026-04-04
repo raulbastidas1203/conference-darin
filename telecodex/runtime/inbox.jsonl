@@ -24,3 +24,5 @@
 {"ts": 1775273188, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 47, "text": "/codex c1 responde solo “pong” nada más"}
 {"ts": 1775273389, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 50, "text": "/chats"}
 {"ts": 1775273468, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 52, "text": "/codex c3 crea una carpeta “.test” luego crea un .md “test” y luego escribe en ese archivo “pong”"}
+{"ts": 1775274055, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 55, "text": "/chats"}
+{"ts": 1775274081, "source": "telegram", "chat_id": "1452407191", "from": "darin1203", "message_id": 57, "text": "/codex c1 solo dime : hola"}
