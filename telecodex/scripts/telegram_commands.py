@@ -13,6 +13,7 @@ EVENTS = RUNTIME / 'events.jsonl'
 OUTBOX = RUNTIME / 'outbox.jsonl'
 CODEX_SESSIONS = RUNTIME / 'codex_sessions.json'
 PENDING = RUNTIME / 'pending_codex_actions.json'
+MONITORS = RUNTIME / 'session_monitors.json'
 SEND_CODEX = BASE_DIR / 'scripts' / 'send_codex_message.py'
 SEND_CODEX_FRESH = BASE_DIR / 'scripts' / 'send_codex_fresh.py'
 STATE = RUNTIME / 'command_state.json'
@@ -79,6 +80,19 @@ def save_pending(data):
     PENDING.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
 
 
+def load_monitors():
+    if MONITORS.exists():
+        try:
+            return json.loads(MONITORS.read_text(encoding='utf-8'))
+        except Exception:
+            pass
+    return {}
+
+
+def save_monitors(data):
+    MONITORS.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+
+
 def normalize_text(text: str) -> str:
     lowered = text.strip().lower()
     normalized = unicodedata.normalize('NFD', lowered)
@@ -100,7 +114,9 @@ def handle_command(text: str):
             '- /last: último evento\n'
             '- /chats: sesiones Codex recientes\n'
             '- /codex C1 <mensaje>: envía un mensaje a una sesión Codex\n'
-            '- /codexnew --cwd /ruta <mensaje>: usa una sesión fresca con cwd controlado\n\n'
+            '- /codexnew --cwd /ruta <mensaje>: usa una sesión fresca con cwd controlado\n'
+            '- /connect C1: sigue ese chat y avisa cuando termine\n'
+            '- /disconnect: deja de seguir el chat conectado\n\n'
             'Tip: evita sesiones marcadas como [riesgoso] en /chats.'
         )
 
@@ -143,6 +159,16 @@ def handle_command(text: str):
 
     if n in ('no', 'cancelar', 'cancela'):
         return {'action': 'codex_cancel'}
+
+    if t.startswith('/connect '):
+        alias = t[len('/connect '):].strip().upper()
+        sess = resolve_codex_session(alias)
+        if not sess:
+            return f'No encontré la sesión {alias}. Usa /chats.'
+        return {'action': 'connect_session', 'alias': alias}
+
+    if t == '/disconnect':
+        return {'action': 'disconnect_session'}
 
     if t.startswith('/codexnew '):
         body = t[len('/codexnew '):].strip()
@@ -205,6 +231,24 @@ def main():
                 'chat_id': item.get('chat_id'),
                 'text': reply,
             })
+        elif isinstance(reply, dict) and reply.get('action') == 'connect_session':
+            chat_id = str(item.get('chat_id'))
+            monitors = load_monitors()
+            monitors[chat_id] = {'alias': reply['alias']}
+            save_monitors(monitors)
+            append(OUTBOX, {
+                'kind': 'reply',
+                'chat_id': chat_id,
+                'text': f"Conectado a {reply['alias']}. Te avisaré cuando ese chat termine un turno nuevo.",
+            })
+        elif isinstance(reply, dict) and reply.get('action') == 'disconnect_session':
+            chat_id = str(item.get('chat_id'))
+            monitors = load_monitors()
+            if monitors.pop(chat_id, None) is not None:
+                save_monitors(monitors)
+                append(OUTBOX, {'kind': 'reply', 'chat_id': chat_id, 'text': 'Desconectado del chat monitoreado.'})
+            else:
+                append(OUTBOX, {'kind': 'reply', 'chat_id': chat_id, 'text': 'No había ningún chat conectado.'})
         elif isinstance(reply, dict) and reply.get('action') == 'codexnew_prepare':
             pending = load_pending()
             chat_id = str(item.get('chat_id'))

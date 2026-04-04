@@ -33,4 +33,12 @@ else
   echo "command loop pid: $(cat runtime/command_loop.pid)"
 fi
 
+if [ -f runtime/session_monitor.pid ] && kill -0 "$(cat runtime/session_monitor.pid)" 2>/dev/null; then
+  echo 'session monitor ya está corriendo'
+else
+  nohup python3 scripts/session_monitor_loop.py --interval 5 > logs/session_monitor.log 2>&1 &
+  echo $! > runtime/session_monitor.pid
+  echo "session monitor pid: $(cat runtime/session_monitor.pid)"
+fi
+
 echo 'telecodex iniciado'
