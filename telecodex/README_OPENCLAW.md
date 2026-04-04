@@ -165,11 +165,18 @@ Logs:
 - `logs/command_loop.log`
 
 Comandos de Telegram soportados por ahora:
+- `/help`
 - `/status`
 - `/inbox`
 - `/last`
 - `/chats`
 - `/codex C1 <mensaje>`
+
+Puedes registrar el menú de comandos del bot con:
+
+```bash
+python3 scripts/set_bot_commands.py
+```
 
 ## Wrapper para registrar tareas reales
 

@@ -64,6 +64,17 @@ def resolve_codex_session(alias: str):
 
 def handle_command(text: str):
     t = text.strip()
+    if t in ('/help', '/start'):
+        return (
+            'Comandos disponibles:\n'
+            '- /help: muestra esta ayuda\n'
+            '- /status: últimos eventos útiles\n'
+            '- /inbox: últimos mensajes recibidos\n'
+            '- /last: último evento\n'
+            '- /chats: sesiones Codex recientes\n'
+            '- /codex C1 <mensaje>: envía un mensaje a una sesión Codex\n\n'
+            'Tip: evita sesiones marcadas como [riesgoso] en /chats.'
+        )
     if t == '/status':
         events = tail_jsonl(EVENTS, 3)
         summary = []
