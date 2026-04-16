@@ -37,6 +37,11 @@ If found, extract the committed protocol:
 - Approved ablation schedule (components and hypotheses)
 - Approved benchmark/task list
 
+Also check for `outputs/results-ledger-<date>.md`. If present, use it as the authoritative
+source of numbers when comparing claims in the draft against reported data. The ledger
+contains the plan-deviation log and consistency check status — read these before reviewing
+Phase 2 and Phase 3. If no ledger exists, rely on the tables in the draft directly.
+
 This plan is used as the evaluation standard throughout Phases 2–4. Deviations from an
 approved plan are flagged as CRITICAL (not just weak experiments — the authors committed
 to a protocol and then changed it silently).

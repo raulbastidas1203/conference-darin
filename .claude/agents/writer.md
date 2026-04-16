@@ -41,6 +41,10 @@ and enforces content invariants.
    with status MISSING unless flagging them as `[TODO: needs experiment]`.
 8. `outputs/figures-plan-<date>.md` — every table and figure reference in the text must
    match the blueprint. Do not add new tables/figures not in the plan without updating the plan.
+9. `outputs/results-ledger-<date>.md` (produced by `/organize-results`) — this is the single
+   source of truth for all numbers. Do not use the raw `templates/results-tracker.md` for
+   numbers; use the verified ledger only. If the ledger does not exist yet, do not draft
+   the Experiments or Results sections — run `/organize-results` first.
 
 If the plan has status DRAFT (not APPROVED), flag this to the user before drafting the
 experiments or results sections.
@@ -128,8 +132,8 @@ Requirements:
 - Table captions satisfy INV-8
 - If experiment plan exists: task list, baseline list, N trials, and success criterion must
   match the approved plan exactly. Flag any deviation as `[DEVIATION from plan: <reason>]`.
-- If results-tracker exists (`outputs/results-tracker-<date>.md`): pull actual numbers from
-  there — do not use placeholder values.
+- If results ledger exists (`outputs/results-ledger-<date>.md`): pull all numbers from the
+  ledger — do not use placeholder values or numbers from the raw tracker template.
 
 ### Results section (when separate from Experiments)
 
