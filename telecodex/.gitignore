@@ -1,6 +1,0 @@
-config/telegram.settings.json
-logs/
-tmp/
-.cursor-telegram/
-Thumbs.db
-.DS_Store

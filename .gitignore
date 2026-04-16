@@ -1,9 +1,52 @@
-telecodex/config/telegram.settings.json
-telecodex/logs/
-telecodex/.env
-telecodex/runtime/*.pid
-telecodex/runtime/*.jsonl
-telecodex/runtime/*.json
-telecodex/.cursor-telegram/
-telecodex/scripts/__pycache__/
-telecodex/test.md
+# Papers provistos por el usuario (pueden ser sensibles o grandes)
+papers/*.pdf
+papers/*.PDF
+
+# PDFs generados localmente
+drafts/*.pdf
+drafts/*.PDF
+outputs/*.pdf
+outputs/*.aux
+outputs/*.log
+outputs/*.bbl
+outputs/*.blg
+outputs/*.fdb_latexmk
+outputs/*.fls
+outputs/*.synctex.gz
+
+# LaTeX build artifacts en cualquier carpeta
+*.aux
+*.log
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.out
+*.toc
+*.lot
+*.lof
+_minted-*/
+
+# Configuración local de credenciales o entorno
+.env
+*.local
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python (si se usan scripts de utilidad)
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# No ignorar los .gitkeep
+!**/.gitkeep
