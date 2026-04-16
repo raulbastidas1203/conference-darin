@@ -1,95 +1,117 @@
-# Skill: search-lit
+# Skill: /search-lit
 
-Búsqueda sistemática y organización de literatura para un tema de robótica.
+Systematic literature search and classification for a robotics topic.
+Dispatches Librarian → Librarian-Critic pipeline.
 
-## Invocación
+## Invocation
 
 ```
-/search-lit <tema> [--venue icra|iros|corl|rss|ral|tro] [--years <desde>-<hasta>] [--type survey|method|benchmark]
+/search-lit <topic> [--venue icra|iros|corl|rss|ral|tro] [--years YYYY-YYYY] [--type survey|method|benchmark|all]
 ```
 
-**Ejemplos:**
+**Examples:**
 ```
-/search-lit "imitation learning for dexterous manipulation"
-/search-lit "sim2real transfer humanoids" --venue icra --years 2021-2025
-/search-lit "visual affordance learning" --type survey
+/search-lit "diffusion models for robot manipulation"
+/search-lit "sim2real transfer locomotion" --venue icra --years 2022-2025
+/search-lit "bimanual manipulation imitation learning" --type benchmark
 ```
 
-## Qué hace este skill
+## What this skill does
 
-Eres un asistente de investigación especializado en robótica. Al ejecutar este skill debes:
+1. **Reads context** — checks `drafts/` for active paper to understand the topic;
+   reads `.claude/references/domain-profile.md` to calibrate subfield expectations
+2. **Dispatches Librarian** — runs full search protocol (Tier 1 venues → APIs → arXiv)
+3. **Updates tracker** — adds all papers to `references/tracker.md` under CANDIDATE status
+4. **Dispatches Librarian-Critic** — verifies coverage, checks for fabrications, identifies gaps
+5. **Presents consolidated output** — merged Librarian + Critic report
 
-### 1. Búsqueda primaria
-Busca el tema usando WebSearch en las siguientes fuentes en orden:
+## Librarian protocol (runs as part of this skill)
 
-1. **arXiv** — `site:arxiv.org cs.RO <tema>` y `site:arxiv.org <tema> robot`
-   - Extrae: arxiv ID, título, autores, fecha, abstract
-2. **Semantic Scholar** — busca via API: `https://api.semanticscholar.org/graph/v1/paper/search?query=<tema>&fields=title,authors,year,venue,citationCount,abstract&limit=20`
-3. **DBLP** — `https://dblp.org/search/publ/api?q=<tema>&format=json&h=20` para papers en ICRA/IROS/CoRL/RSS/RA-L/T-RO
+See `.claude/agents/librarian.md` for full protocol.
 
-### 2. Clasificación de resultados
+**Search sources (in priority order):**
+1. IEEE Xplore for ICRA/IROS/RA-L/T-RO/Humanoids papers
+2. OpenReview for CoRL papers
+3. Semantic Scholar API for cross-venue metadata and citations
+4. DBLP for CS/robotics conference metadata
+5. arXiv cs.RO, cs.AI, cs.CV, cs.LG for preprints (marked [PREPRINT])
+6. Google Scholar for broader discovery
 
-Para cada paper encontrado, clasifica:
+**For each paper found, extract:** title, authors, venue, year, DOI or arXiv ID,
+citation count, abstract summary (1–2 sentences), access status.
 
-**Central** — si es relevante directo al tema (método principal, benchmark referencia, paper fundacional, competitor directo)
-**Relacionado** — si toca el tema de forma indirecta o parcial
-**Marginal** — si solo comparte keywords pero no es directamente relevante
+**Classification:** Central / Related / Marginal (see agent spec)
 
-### 3. Extracción de metadata
+## Librarian-Critic checks (runs after Librarian)
 
-Para cada paper **central** o **relacionado**, extrae:
-- Título completo
-- Autores (primer autor + "et al." si >3)
-- Venue + año
-- DOI o arXiv ID (para trazabilidad)
-- Abstract en 1-2 oraciones
-- Número de citas (si disponible)
+See `.claude/agents/librarian-critic.md` for full protocol.
 
-### 4. Output estructurado
+Verifies: citation integrity (no fabrications), coverage gaps, classification accuracy,
+novelty claim support.
 
-Entrega el resultado en este formato:
+## Output
 
 ```markdown
-## Resultados: <tema>
-Fecha de búsqueda: <fecha>
-Fuentes consultadas: arXiv, Semantic Scholar, DBLP
+## /search-lit: <topic>
+Date: <date>
+Queries: [list]
+Agents: Librarian + Librarian-Critic
 
-### Papers Centrales (<N> encontrados)
+---
 
-| # | Título | Autores | Venue/Año | Citas | ID |
-|---|--------|---------|-----------|-------|----|
-| 1 | ... | ... | ICRA 2023 | 142 | arxiv:2301.XXXXX |
+### Central papers (<N>)
+| # | Title | Authors | Venue/Year | Cites | ID | Access | Status |
+|---|-------|---------|-----------|-------|----|--------|--------|
+| 1 | Diffusion Policy: Visuomotor Policy Learning via Action Diffusion | Chi et al. | CoRL 2023 | 847 | arXiv:2303.04137 | Free | VERIFIED |
 
-**Notas de relevancia:**
-- [1] Es el benchmark de referencia para X, define las métricas estándar.
-- [2] Método state-of-the-art en Y hasta 2023, superado por [3].
+**Notes:**
+- [1] Required baseline for any manipulation IL paper at ICRA/CoRL.
+- [2] Defines the LIBERO benchmark used by [1]; cite as benchmark reference.
 
-### Papers Relacionados (<N> encontrados)
+---
 
-| # | Título | Autores | Venue/Año | Citas | ID |
-|---|--------|---------|-----------|-------|----|
+### Related papers (<N>)
+| # | Title | Authors | Venue/Year | Cites | ID | Access |
+| ...
 
-### Gaps Identificados
+---
 
-- No se encontraron papers que aborden [aspecto específico]
-- Pocos trabajos combinan [A] con [B]
-- La mayoría de métodos asumen [limitación no resuelta]
+### Coverage gaps (Librarian-Critic)
+MAJOR: Missing [description — reviewer will expect this]
+MINOR: [description]
 
-### Papers a conseguir (sin acceso libre)
+---
 
-Los siguientes papers son centrales pero no tienen versión arXiv disponible. Si necesitas el full text, consíguelos con tus credenciales universitarias:
-- [Título], [Autores], [Venue año], DOI: [DOI]
+### Papers to retrieve (NEED-PDF)
+These are Central papers with no free access. Fetch with university credentials:
+- [Full citation], DOI: [DOI]
+
+---
+
+### UNVERIFIED entries
+[list or "none"] — removed from references.bib
+
+---
+
+### tracker.md updated
+<N> CANDIDATE entries added to references/tracker.md
+
+---
+
+### Recommended next steps
+- Read full text of: [top 3–5 Central papers]
+- Additional query suggestion: [if coverage is sparse]
+- Ready for /related-work: [Yes / Not yet — need more coverage in X]
 ```
 
-### 5. Recomendación de siguiente paso
+## Tracker update format
 
-Al final, sugiere:
-- Qué papers centrales leer primero (por impacto + relevancia)
-- Si tiene sentido hacer `/related-work` ahora o si falta más cobertura
-- Keywords adicionales que podrían ampliar la búsqueda
+For each paper found, add to `references/tracker.md`:
 
-## Notas importantes
+```
+| key | Title | First Author | Venue/Year | Source Type | Relevance | Access | Status | Read |
+```
 
-- No inventar papers. Si un paper aparece en una búsqueda pero no puedes verificar sus datos (título, autores, venue, año), marcarlo como `[VERIFICAR]`.
-- Si Semantic Scholar devuelve un paper con 0 citas y es de 2020 o antes, puede ser un artefacto — verificar antes de incluirlo.
-- Priorizar papers de venues IEEE/ICRA/IROS/CoRL/RSS/RA-L/T-RO sobre workshops o arXiv puro cuando hay opciones.
+Source type: `Conference` | `Journal` | `Preprint` | `Workshop`
+Status: `CANDIDATE` → `VERIFIED` → `FULL-TEXT` | `NEED-PDF` | `UNVERIFIED`
+Read: `Unread` | `Abstract` | `Full`

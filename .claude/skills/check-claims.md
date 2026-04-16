@@ -1,109 +1,141 @@
-# Skill: check-claims
+# Skill: /check-claims
 
-Auditoría de consistencia entre afirmaciones del paper y evidencia presentada.
+Claims-evidence audit of a paper section or full draft.
+Dispatches Writer-Critic with focus on claim validation.
 
-## Invocación
+## Invocation
 
 ```
-/check-claims [<archivo>]
+/check-claims [<file or section>]
 ```
 
-**Ejemplos:**
+**Examples:**
 ```
-/check-claims                         # Audita el borrador en /drafts/
-/check-claims drafts/paper.tex
+/check-claims                          # Entire draft in /drafts/
+/check-claims drafts/introduction.tex
+/check-claims drafts/experiments.tex
 ```
 
-## Qué hace este skill
+## What this skill does
 
-Eres un auditor técnico de papers científicos. Tu tarea es extraer cada claim del paper y verificar si tiene evidencia suficiente. Eres sistemático y no asumes nada — si una afirmación no tiene soporte explícito, la señalas.
+1. **Reads the target** — specified file or full draft
+2. **Reads tables and figures** — to compare numbers against text claims
+3. **Dispatches Writer-Critic** in claim-audit mode
+4. **Produces a prioritized action list**
+5. **Saves output** to `outputs/claims-audit-<date>.md`
 
-### Tipos de claims a auditar
+## Claim types audited
 
-**Claims cuantitativos:**
-- "Our method achieves X% success rate on Y"
-- "We reduce computation by Z×"
-- "The approach generalizes to N different tasks"
+| Type | Example | Evidence required |
+|------|---------|------------------|
+| Quantitative | "achieves 86.4%" | Table/figure with exact number |
+| Comparative | "outperforms BC by 15pp" | Table showing both; arithmetic correct |
+| Causal | "improvement due to component X" | Ablation removing X |
+| Qualitative | "more robust to noise" | Ablation or comparative experiment |
+| Novelty | "first to combine X and Y" | Literature search evidence (INV-17) |
+| About prior work | "X fails at Y" | Citation + specific evidence from that paper |
 
-**Claims cualitativos:**
-- "Our method is more robust to noise"
-- "The approach requires less data"
-- "Our system handles real-world conditions better"
+## Writer-Critic focus areas (claim mode)
 
-**Claims de novedad:**
-- "We are the first to..."
-- "No prior work has addressed..."
-- "Unlike existing approaches, we..."
+### Numbers consistency (INV-9) — highest priority
 
-**Claims causales:**
-- "The improvement is due to component X"
-- "Removing Y degrades performance because..."
+Extract every number mentioned in the body text. For each:
+- Locate the corresponding table/figure
+- Verify exact match (86.4 ≠ 86.3; 3× ≠ 2.9×)
+- **Any mismatch = CRITICAL** — escalate to user immediately
 
----
+### Quantitative claims without numbers
 
-### Protocolo de auditoría
+Statements like "significantly better", "notably higher", "substantially faster":
+- Replace with specific numbers or flag as `[TODO: quantify]`
+- All comparative claims need the comparison baseline explicitly stated
 
-Para cada claim identificado:
+### Causal claims (INV-18)
 
-1. **Localizar** — sección y párrafo donde aparece
-2. **Clasificar** — tipo de claim (cuantitativo / cualitativo / novedad / causal)
-3. **Buscar evidencia** — ¿dónde está el soporte? (tabla, figura, ablation, cita)
-4. **Evaluar suficiencia** — ¿la evidencia realmente soporta el claim?
+"The improvement is due to X" → requires ablation of X (Table N, row "w/o X")
+"Removing Y causes degradation" → requires ablation showing this
 
-**Escalas de soporte:**
-- ✅ **Soportado** — evidencia directa y suficiente
-- ⚠️ **Parcialmente soportado** — evidencia existe pero es insuficiente (pocas runs, solo una condición, sin baseline)
-- ❌ **No soportado** — no hay evidencia en el paper
-- 🔍 **Requiere cita** — afirmación sobre literatura sin referencia
+### Novelty claims (INV-17)
 
----
+"We are the first to..." → requires:
+- Venues searched + year range
+- What was found (or not found)
+- If reformulation is safer: "We propose the first method that [specific combo of properties]"
 
-### Output
+### [TODO: cite] audit
+
+List every `[TODO: cite]` remaining. These must be resolved before submission.
+For each, suggest where to search and what the citation should be.
+
+## Output format
 
 ```markdown
-## Auditoría de Claims: [nombre del paper]
-
-### Resumen
-- Claims totales identificados: N
-- Soportados: N ✅
-- Parcialmente soportados: N ⚠️
-- No soportados: N ❌
-- Requieren cita: N 🔍
+## /check-claims Audit
+File: <path>
+Date: <date>
 
 ---
 
-### Detalle
-
-#### ✅ Claims soportados
-| # | Claim | Localización | Evidencia |
-|---|-------|-------------|-----------|
-| 1 | "..." | Sec. IV-B | Tabla II, col. 3 |
-
-#### ⚠️ Claims parcialmente soportados
-| # | Claim | Localización | Problema | Sugerencia |
-|---|-------|-------------|----------|-----------|
-| 1 | "Our method is more sample-efficient" | Sec. I | Solo se muestra en 1 tarea | Mostrar en al menos 3 tareas, comparar curvas de aprendizaje |
-
-#### ❌ Claims no soportados
-| # | Claim | Localización | Por qué es problema | Cómo resolverlo |
-|---|-------|-------------|--------------------|----|
-| 1 | "We are the first to combine X and Y" | Sec. I | No hay búsqueda de literatura citada que lo respalde | Buscar papers en ICRA/IROS que combinen X+Y; si realmente no existen, citar la búsqueda o reformular |
-
-#### 🔍 Afirmaciones sin cita
-| # | Afirmación | Localización | Tipo |
-|---|-----------|-------------|------|
-| 1 | "Existing methods fail in unstructured environments" | Sec. I | Claim sobre literatura — necesita \cite{} |
+## Summary
+- Claims audited: <N>
+- Supported ✅: <N>
+- Partially supported ⚠️: <N>
+- Unsupported ❌: <N>
+- Require citation 🔍: <N>
 
 ---
 
-### Prioridades de acción
-1. [Claim más crítico a resolver, por qué]
-2. ...
+## Numbers audit (INV-9)
+
+| Claim in text | Section | Expected source | Table value | Match? |
+|--------------|---------|----------------|-------------|--------|
+| "achieves 86.4%" | Sec V-A | Table II | 86.4 | ✅ |
+| "3× faster" | Sec I | Table III | 2.8× | ❌ CRITICAL |
+
+---
+
+## Unsupported claims ❌
+
+### [CRITICAL] <claim>
+Location: [Section, paragraph N]
+Type: [quantitative / causal / novelty / qualitative]
+What's missing: [specific evidence needed]
+Fix: [specific action]
+
+---
+
+## Partially supported claims ⚠️
+
+### <claim>
+Location: [location]
+Issue: [what's weak about the evidence]
+Suggested fix: [how to strengthen]
+
+---
+
+## Claims requiring citation 🔍
+
+| Claim | Location | Search suggestion |
+|-------|---------|-----------------|
+| "Existing methods fail in unstructured environments" | Sec I | Search ICRA 2022-2024 for manipulation failure modes |
+
+---
+
+## [TODO: cite] inventory
+
+| Placeholder | Location | Suggested reference |
+|------------|---------|-------------------|
+| [TODO: cite] | Sec III, para 2 | This is the DAgger claim — cite Ross et al., AISTATS 2011 |
+
+---
+
+## Supported claims ✅
+[Brief list — no action needed]
+
+---
+
+## Priority actions
+1. [CRITICAL] Fix number mismatch: "3×" should be "2.8×" (or recheck Table III)
+2. [CRITICAL] Add ablation for component X to support causal claim in Sec IV
+3. [MAJOR] Resolve [TODO: cite] at Sec III, para 2
 ```
-
-## Notas
-
-- Un claim cuantitativo sin cifra exacta ("significantly better") es automáticamente `⚠️`
-- Un claim causal sin ablation es automáticamente `⚠️` incluso si el resultado general está soportado
-- Afirmaciones de novedad absoluta ("first to") son de alto riesgo — marcar siempre para verificación externa
-- Si el paper usa lenguaje hedging apropiado ("we observe that", "results suggest"), es buena señal

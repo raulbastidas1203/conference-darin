@@ -1,152 +1,175 @@
-# Skill: ieee-checklist
+# Skill: /ieee-checklist
 
-Verificación pre-submission de paper IEEE para conferencias de robótica.
+Pre-submission verification against IEEE standards and venue requirements.
+Dispatches Writer-Critic in checklist mode.
 
-## Invocación
+## Invocation
 
 ```
-/ieee-checklist [<archivo>] [--venue icra|iros|corl|rss|ral] [--mode full|outline|format|content]
+/ieee-checklist [--venue icra|iros|corl|rss|ral|tro] [--mode full|format|content|outline]
 ```
 
-**Ejemplos:**
+**Examples:**
 ```
-/ieee-checklist                          # Checklist completo sobre /drafts/
-/ieee-checklist --venue icra             # Con requisitos específicos de ICRA
-/ieee-checklist --mode format            # Solo verificación de formato
-/ieee-checklist --mode outline           # Verifica estructura antes de empezar a escribir
+/ieee-checklist --venue icra           # Full checklist for ICRA
+/ieee-checklist --mode format          # Format only (pre-camera-ready)
+/ieee-checklist --mode outline         # Before writing, verify outline is solid
+/ieee-checklist --mode content         # Content standards only
 ```
 
-## Qué hace este skill
+## What this skill does
 
-Ejecutas una verificación sistemática del paper contra los estándares IEEE y los requisitos del venue objetivo. Eres exhaustivo y específico — no chequeos genéricos.
+1. **Reads the draft** — from `drafts/` or specified path
+2. **Reads venue profile** — from `.claude/references/venue-profiles.md`
+3. **Reads content invariants** — from `.claude/rules/content-invariants.md`
+4. **Dispatches Writer-Critic** in checklist mode
+5. **Produces pass/fail checklist** with specific fixes
 
----
+## Mode: OUTLINE (before writing)
 
-### Checklist Modo: OUTLINE (antes de escribir)
+Verify the outline (from `templates/paper-outline.md`) has:
 
-Verifica que el outline tiene:
+- [ ] Contribution stated as falsifiable, specific claim
+- [ ] 2–4 contributions listed, each verifiable in the paper
+- [ ] Gap in literature identified with at least 2 references
+- [ ] Target venue confirmed (impacts experiment expectations)
+- [ ] Baselines identified with citations (not just names)
+- [ ] Metrics defined with units and justification
+- [ ] Hardware/sim platform specified (INV-4 planning)
+- [ ] Ablation components planned
 
-- [ ] Contribuciones listadas explícitamente (mínimo 2-3 bullets concretos)
-- [ ] Gap en literatura identificado con al menos 2 citas de referencia
-- [ ] Venue objetivo definido (impacta longitud, formato, nivel de detalle de experimentos)
-- [ ] Baselines identificados (papers con cita, no solo nombres)
-- [ ] Métricas principales definidas y justificadas
-- [ ] Hardware/entorno experimental especificado
-- [ ] Secciones principales mapeadas con estimación de páginas
+## Mode: CONTENT (during writing)
 
----
+### Abstract (INV-14)
+- [ ] 150–250 words
+- [ ] Contains: problem + approach + quantitative result
+- [ ] No "novel" without evidence; no "state-of-the-art" without comparison
+- [ ] Readable independently
 
-### Checklist Modo: CONTENT (durante redacción)
+### Introduction (INV-15)
+- [ ] Numbered contribution list with 2–4 specific items
+- [ ] Gap cites at least 2 papers
+- [ ] Ends with paper organization
 
-#### Abstract
-- [ ] Longitud: 150-250 palabras
-- [ ] Contiene: motivación (1-2 oraciones) + método principal (1-2 oraciones) + resultado cuantitativo clave (1 oración) + implicación/contribution (1 oración)
-- [ ] No usa "novel", "state-of-the-art", "outperforms" sin cifras
-- [ ] Se puede leer de forma totalmente independiente del paper
+### Related Work
+- [ ] Organized by technical dimension (not chronological)
+- [ ] Each subsection positions vs. own work
+- [ ] Closest competitor explicitly compared
+- [ ] No "first to" without INV-17 support
 
-#### Introduction
-- [ ] Establece el problema con motivación clara en el primer párrafo
-- [ ] Cita evidencia del gap (papers que no resuelven el problema)
-- [ ] Lista contribuciones numeradas y específicas
-- [ ] Termina con outline ("The rest of the paper is organized as follows...")
-- [ ] Cada contribución es verificable en el paper
+### Methodology
+- [ ] All symbols defined before use (INV-11)
+- [ ] Equations numbered
+- [ ] Design choices justified
+- [ ] Hardware described (INV-4)
 
-#### Related Work
-- [ ] Organizado por dimensión técnica, no cronológico
-- [ ] Cada subsección termina posicionando el trabajo propio
-- [ ] Los papers más relevantes tienen análisis crítico (no solo listing)
-- [ ] No hay "we are the first" sin soporte de búsqueda
-- [ ] Cita papers de los últimos 2 años en el mismo venue objetivo
+### Experiments
+- [ ] Mean ± std for all results (INV-2)
+- [ ] N trials stated (INV-3)
+- [ ] All baselines cited (INV-5)
+- [ ] Ablation for all key components (INV-12)
+- [ ] Sim/real scope explicit (INV-16)
 
-#### Methodology
-- [ ] Notación matemática definida antes de usarse
-- [ ] Ecuaciones numeradas
-- [ ] Las elecciones de diseño están justificadas (no solo descritas)
-- [ ] Pseudocódigo o diagrama para métodos complejos
-- [ ] Se puede reproducir el método con la descripción dada
+### Results & Discussion
+- [ ] Text numbers match tables (INV-9 — check every number)
+- [ ] Causal claims have ablation support (INV-18)
+- [ ] Failure cases discussed
 
-#### Experiments
-- [ ] Setup completo: hardware o simulador + versión, tareas, condiciones
-- [ ] Cada baseline tiene cita directa
-- [ ] Métricas definidas con unidades y justificación
-- [ ] Media ± std (o equivalente) en todos los resultados cuantitativos
-- [ ] Número de runs/trials especificado
-- [ ] Ablation study de componentes principales del método
-- [ ] Análisis de fallos o limitaciones observadas
+### Conclusion
+- [ ] Limitations section (honest)
+- [ ] Future work is concrete (not generic)
 
-#### Results
-- [ ] Tablas con caption autocontenido (el lector entiende sin leer el texto)
-- [ ] Figuras con caption autocontenido
-- [ ] Los números en el texto coinciden con los de tablas/figuras
-- [ ] Análisis cualitativo complementa los números (no solo "Table I shows X is better")
-- [ ] Diferencias estadísticamente significativas o con suficientes runs
+## Mode: FORMAT (pre-submission final check)
 
-#### Conclusion
-- [ ] Reitera contribuciones (no repite el abstract)
-- [ ] Menciona limitaciones honestas
-- [ ] Propone trabajo futuro concreto (no genérico)
+### IEEE template compliance
+- [ ] Correct template for venue (download from IEEE Author Center)
+- [ ] Double column enforced
+- [ ] Times New Roman 10pt body (no font substitutions)
+- [ ] No `\vspace{}` or margin hacks
 
----
+### Page count
+- [ ] Within limit: ICRA/IROS/CoRL/RSS/RA-L = 8 pages + references (verify with CFP)
+- [ ] T-RO: no limit
+- [ ] References don't count toward limit (verify with current CFP)
 
-### Checklist Modo: FORMAT (pre-submission final)
+### Tables (INV-1)
+- [ ] All tables use booktabs (`\toprule`, `\midrule`, `\bottomrule`)
+- [ ] No `\hline` anywhere
+- [ ] No vertical rules
+- [ ] Captions above table (IEEE style)
 
-#### Formato IEEE Conference
-- [ ] Doble columna
-- [ ] Fuente: Times New Roman 10pt (body), sin cambiar
-- [ ] Márgenes según template oficial IEEE
-- [ ] Longitud dentro del límite del venue:
-  - ICRA/IROS: 6-8 páginas + referencias (verificar CFP actual)
-  - CoRL: 8 páginas + referencias
-  - RSS: 8 páginas + referencias
-  - RA-L: 8 páginas + referencias
+### Figures (INV-6, INV-7, INV-19)
+- [ ] All figures ≥ 300 DPI (for print)
+- [ ] All figures legible in grayscale
+- [ ] All captions below figure (IEEE style)
+- [ ] Figure titles in LaTeX captions, not embedded in image
+- [ ] All figures referenced in text as "Fig. X" (not "Figure")
 
-#### Referencias
-- [ ] Formato IEEE: [1] Apellido, N., "Título", Venue, año, pp. X-Y.
-- [ ] Sin URLs crudas — usar DOI cuando disponible
-- [ ] Sin referencias a "Personal Communication"
-- [ ] Todas las referencias son citadas en el texto
-- [ ] Todas las citas en el texto tienen referencia en la lista
-- [ ] Referencias ordenadas por orden de aparición (no alfabético)
+### References
+- [ ] Format: `[N] A. Author, "Title," Proc. VENUE, pp. X–Y, year.`
+- [ ] No raw URLs as standalone references
+- [ ] DOI used when available
+- [ ] All `\cite{}` keys resolve in .bib file
+- [ ] No duplicate entries
+- [ ] Ordered by appearance in text
 
-#### Figuras y Tablas
-- [ ] Todas las figuras referenciadas en el texto con "Fig. X"
-- [ ] Todas las tablas referenciadas con "Table X" (mayúscula)
-- [ ] Figuras en resolución mínima 300 DPI (para imprenta)
-- [ ] Figuras legibles en escala de grises (muchos revisores imprimen en B&W)
-- [ ] Caption de figuras al pie, caption de tablas al inicio
+### Anonymization (double-blind venues: ICRA, IROS, CoRL, RSS)
+- [ ] No author names in text
+- [ ] No institutional affiliations in text
+- [ ] Self-citations in third person: "[14]" not "our prior work [14]"
+- [ ] No acknowledgments (or "[omitted for blind review]")
+- [ ] No repo URLs with identifying names
+- [ ] PDF metadata clean: File → Properties → no author name
 
-#### Texto
-- [ ] Acrónimos definidos en primera aparición
-- [ ] Consistencia en términos técnicos (no alternar "robot" y "agent" si son lo mismo)
-- [ ] Sin secciones vacías o con "TODO"
-- [ ] Sin texto en color (excepto figuras)
-- [ ] Sin track changes o comentarios de Word/LaTeX visibles
+### Acronyms (INV-10)
+- [ ] Every acronym defined on first use
+- [ ] No alternation between full form and acronym after definition
 
-#### Compliance
-- [ ] Anonymizado correctamente si el venue es double-blind
-- [ ] Sin self-citations que rompan el anonimato
-- [ ] Video suplementario/demo link preparado (si requerido por venue)
-- [ ] Código/datos en repositorio con URL (si se incluye en el paper)
-
----
-
-### Output
+## Output format
 
 ```markdown
-## Checklist IEEE — [venue] [modo]
+## /ieee-checklist: <venue> — <mode>
+Date: <date>
 
-### PASA ✅
-- [item: lo que está bien]
+---
 
-### FALLA ❌
-| Item | Sección | Acción requerida |
-|------|---------|-----------------|
-| Abstract sin resultado cuantitativo | Abstract | Agregar "achieving X% on Y benchmark" |
-| Tabla I sin caption autocontenido | Sec. IV | Expandir caption para incluir setup |
+## FAILS ❌ (must fix)
 
-### VERIFICAR ⚠️
-- [item que requiere revisión manual del usuario]
+| Item | INV | Section | Required action |
+|------|-----|---------|----------------|
+| Table III uses \hline | INV-1 | Sec V | Replace with \midrule |
+| Fig 4 text unreadable in grayscale | INV-6 | Sec IV | Use markers + dashed lines |
+| "3×" in text ≠ "2.8×" in Table II | INV-9 | Sec V-A | Fix one of the two |
+| Missing N trials in Table II | INV-3 | Table II | Add "N=20" to caption |
 
-### Resumen
-Paper listo para submission: [Sí / No — N items bloqueantes]
+---
+
+## PASSES ✅
+
+[List of items verified as correct — reader can confirm no action needed]
+
+---
+
+## VERIFY ⚠️ (manual check required)
+
+- [ ] PDF metadata: check File → Properties for author names (cannot verify automatically)
+- [ ] DPI of Figure 2: if generated from matplotlib, check output settings
+
+---
+
+## Page count
+Current: X pages + Y pages refs = X total
+Limit: 8 pages (body) + refs (unlimited)
+Status: [WITHIN / OVER by N lines]
+
+---
+
+## Summary
+- Blocking issues: <N>
+- Non-blocking issues: <N>
+- Ready to submit: [NO — N blocking issues | YES]
 ```
+
+## Saving output
+
+Save to `outputs/ieee-checklist-<venue>-<YYYYMMDD>.md`.
