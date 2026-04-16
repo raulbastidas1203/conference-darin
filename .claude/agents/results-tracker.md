@@ -73,7 +73,10 @@ the average and compare. Flag any discrepancy as ARITHMETIC-ERROR.
 header or the approved plan. Flag if they differ.
 
 **Metric format:** Verify that every cell with a quantitative result follows `mean ± std`
-(INV-2). Flag any cell with only a mean (no std) as INV-2-VIOLATION.
+(INV-2). Flag any cell with only a mean (no std) as INV-2-VIOLATION, **unless N=1 is
+explicitly stated for that result** (the INV-2 single-trial exception). When N=1 is declared,
+record the cell as INV-2-SINGLE-TRIAL (not an error, but logged for the Methods-Referee as
+a noted limitation).
 
 **Completeness:** For every (method × task) cell that should exist per the experiment plan,
 check that a value is present. Flag empty cells that should be filled as DATA-MISSING.
@@ -104,10 +107,12 @@ For each claim ID in the Stage A claim-evidence map:
 
 1. Find the result that was planned to support it
 2. Check if that result now exists in the tracker
-3. If yes and number is present: advance status PLANNED → SUPPORTED; record the exact number
-4. If the result exists but the number differs from what was expected (e.g., hypothesis said
-   "≥15% improvement" but result shows 12%): advance to SUPPORTED but add a NOTE that the
-   claim threshold may need revision
+3. If yes and number is present and meets any planned threshold: advance status PLANNED → SUPPORTED; record the exact number
+4. If the result exists but the number **misses the planned threshold** (e.g., hypothesis said
+   "≥15% improvement" but result shows 12%): mark status PLANNED → **CONTRADICTED**. Do not
+   advance to SUPPORTED. Add a NOTE: "Observed [X], planned threshold [Y] — claim text or
+   threshold must be revised before this claim can be supported." User must resolve: revise
+   the claim to match actual performance, or run additional experiments.
 5. If the result is missing or empty: mark PLANNED → MISSING
 
 Also check: are there results in the tracker that do not correspond to any claim in the map?
@@ -177,6 +182,7 @@ Claim map: [path to Stage A map]
 | Claim ID | Claim | Was | Now | Number confirmed | Note |
 |---------|-------|-----|-----|-----------------|------|
 | C-001 | Main SR claim | PLANNED | SUPPORTED | 86.4 ± 2.7% | — |
+| C-002 | ≥15% over BC | PLANNED | CONTRADICTED | 12.1 ± 1.8% | Threshold ≥15% not met; claim must be revised |
 | C-003 | Ablation causal | PLANNED | MISSING | — | No ablation data yet |
 | C-005 | — | — | UNCLAIMED | 72.3 ± 3.1% real-robot | Consider adding to contributions |
 
@@ -207,9 +213,7 @@ Claim map: [path to Stage A map]
 **Benchmark-Mapper / Experiment-Planner** — the approved experiment plan is the reference
 standard. Results-Tracker reads it and flags deviations.
 
-**Claim-Tracker** — Stage B of `/track-claims` reads the results ledger (not the raw tracker)
-for number verification. After `/organize-results` runs, run `/track-claims --stage B` to
-propagate updates through the full claim register.
+**Claim-Tracker** — this agent updates the claim map directly (PLANNED → SUPPORTED / CONTRADICTED / MISSING). Stage B of `/track-claims` audits claim coverage *in the draft* — run it after each major section is drafted, not immediately after `/organize-results`.
 
 **Writer** — the Writer reads `outputs/results-ledger-<date>.md` as the source of truth for
 all numbers entering the draft. It does not read the raw tracker.

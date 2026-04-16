@@ -113,8 +113,9 @@ domain norms from `domain-profile.md` as the comparison standard.
    reflect what was actually done, or add a note in the paper (Methods-Referee will flag it).
 3. **Address UNCLAIMED-RESULT entries.** If a result exists but no claim was registered for
    it, consider whether it represents an additional contribution.
-4. **Run `/track-claims --stage B`** to propagate the updated claim map through the full
-   claim register and catch any remaining INV-9 risks before writing.
+4. **The claim map is now updated** by this skill (PLANNED → SUPPORTED / CONTRADICTED / MISSING).
+   Stage B of `/track-claims` audits claim coverage *in the draft text* — run it after each
+   major section is drafted, not here. Running Stage B before any draft exists produces a no-op.
 5. **Begin drafting.** The Writer will read `outputs/results-ledger-<date>.md` automatically.
 
 ---
