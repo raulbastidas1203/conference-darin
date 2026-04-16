@@ -8,10 +8,21 @@
       "Bash(find:*)",
       "Bash(cp:*)",
       "Bash(mv:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(wc:*)",
+      "Bash(date:*)",
       "Bash(bibtex:*)",
+      "Bash(biber:*)",
+      "Bash(latexmk:*)",
+      "Bash(pdfinfo:*)",
       "Bash(python3:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(curl:*)"
     ],
-    "deny": []
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)"
+    ]
   }
 }
