@@ -21,12 +21,19 @@ in parallel, then synthesizes a scored report.
 
 1. **Reads the draft** — from `drafts/` or specified path
 2. **Reads calibration** — `domain-profile.md`, active venue from CLAUDE.md context
-3. **Dispatches in parallel:**
-   - Domain-Referee (see `.claude/agents/domain-referee.md`) — novelty, positioning, technical content
-   - Methods-Referee (see `.claude/agents/methods-referee.md`) — experimental rigor, reproducibility
-   - Writer-Critic (see `.claude/agents/writer-critic.md`) — IEEE format, claims-evidence, invariants
-4. **Computes aggregate score** — weighted per CLAUDE.md quality framework
-5. **Produces consolidated report** — saved to `outputs/review-<date>.md`
+3. **Loads Phase 0 artifacts** (if present — each agent uses them independently):
+   - `outputs/experiment-plan-<date>.md` → passed to Methods-Referee and Writer-Critic
+   - `outputs/claim-evidence-map-<date>.md` → passed to Writer-Critic (Stage B update)
+   - `outputs/figures-plan-<date>.md` → passed to Writer-Critic
+   - `outputs/results-tracker-<date>.md` → passed to Methods-Referee for number verification
+4. **Dispatches in parallel:**
+   - Domain-Referee — novelty, positioning, technical content
+   - Methods-Referee — experimental rigor, reproducibility, plan adherence (Phase 0)
+   - Writer-Critic — IEEE format, claims-evidence, invariants, plan consistency (Dimension 0)
+5. **Updates claim-evidence map** — after Writer-Critic runs, its findings update the map
+   (SUPPORTED claims confirmed, new CRITICAL INV-9 mismatches added)
+6. **Computes aggregate score** — weighted per CLAUDE.md quality framework
+7. **Produces consolidated report** — saved to `outputs/review-<date>.md`
 
 ## Agent dispatch details
 
@@ -83,6 +90,12 @@ in parallel, then synthesizes a scored report.
 
 Gate thresholds: 70 (draft-ready) / 80 (revision-ready) / 90 (submission-ready)
 
+## Severity hierarchy
+
+Note: review-draft aligns with content-invariants.md severity tags. MINOR issues in
+the `/review-draft` report correspond to items that are not content invariant violations
+(writing style, presentation suggestions). INV violations are always CRITICAL or MAJOR.
+
 ## Output format
 
 ```markdown
@@ -90,6 +103,7 @@ Gate thresholds: 70 (draft-ready) / 80 (revision-ready) / 90 (submission-ready)
 File: <path>
 Date: <date>
 Target venue: <venue if known>
+Phase 0 artifacts loaded: [list or "none"]
 
 ---
 
@@ -103,6 +117,15 @@ Status: [BLOCKED <70 | DRAFT-READY 70–79 | REVISION-READY 80–89 | SUBMISSION
 | Methodology clarity | 20% | X/10 | |
 | Experimental rigor | 30% | X/10 | |
 | Writing & IEEE format | 15% | X/10 | |
+
+### Plan adherence summary (if experiment plan loaded)
+
+| Check | Status |
+|-------|--------|
+| Baselines match approved plan | PASS / FAIL |
+| N trials ≥ committed protocol | PASS / FAIL |
+| Ablation covers all planned components | PASS / FAIL |
+| All SUPPORTED claims in map match draft numbers | PASS / FAIL |
 
 ---
 

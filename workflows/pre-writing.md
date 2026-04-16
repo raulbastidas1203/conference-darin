@@ -54,11 +54,11 @@ Formular la contribución de forma específica y falsificable antes de hacer cua
 
 ---
 
-## Fase 0.2 — Literatura relevante y baselines
+## Fase 0.2 — Literatura, benchmarks y baselines
 
 ### Objetivo
 Identificar los papers que serán comparados, los benchmarks que serán usados, y los gaps
-que posicionan tu contribución.
+que posicionan tu contribución. Decidir el scope de evaluación antes de diseñar los experimentos.
 
 ### Pasos
 
@@ -70,12 +70,20 @@ que posicionan tu contribución.
    ```
    Repite con 2–3 queries distintas. Ver `workflows/lit-review.md` para protocolo completo.
 
+2. **Mapear benchmarks:**
+   ```
+   /map-benchmarks --venue <venue>
+   ```
+   Esto produce `outputs/benchmark-map-<date>.md` con benchmarks recomendados, tasks específicos,
+   métricas estándar, y un gap analysis contra las expectativas del venue.
+   Revisar el output antes de continuar: si hay gaps BLOCKING, resolverlos primero.
+
 2. **Clasificación:**
    - **Central:** misma tarea, mismo dominio, competidores directos → leer full-text
    - **Related:** aspecto relevante → leer abstract
    - **Marginal:** keywords compartidos → listar sin leer
 
-3. **Identificación de baselines:**
+3. **Identificación de baselines** (después del benchmark mapping):
    Para cada baseline candidato en tus tablas:
    - ¿Existe y es citable? (Librarian verifica)
    - ¿Es el más fuerte disponible en su familia? (no comparar contra versiones obsoletas)

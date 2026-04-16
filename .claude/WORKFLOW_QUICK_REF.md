@@ -8,7 +8,8 @@
 
 | Command | When to use | Agents dispatched |
 |---------|-------------|------------------|
-| `/plan-experiments [--venue]` | After filling outline, before running experiments | Librarian + Experiment-Planner + Claim-Tracker |
+| `/map-benchmarks [--venue]` | First step: pick benchmarks + tasks + metrics | Benchmark-Mapper |
+| `/plan-experiments [--venue]` | After benchmark mapping, before running experiments | Librarian + Experiment-Planner + Claim-Tracker |
 | `/track-claims --stage A` | After /plan-experiments, to audit coverage | Claim-Tracker (+ Librarian for INV-17) |
 | `/plan-figures [--venue]` | After experiment plan approved | Writer + Writer-Critic |
 
@@ -48,10 +49,12 @@
 ```
 PHASE 0 — PRE-WRITING (before experiments run)
   Fill:    templates/paper-outline.md
-  Run:     /search-lit (baselines + benchmarks)
+  Run:     /search-lit <topic>  (2–3 queries)
+  Run:     /map-benchmarks --venue <v>
   Run:     /plan-experiments --venue <v>
   Run:     /track-claims --stage A
   Run:     /plan-figures --venue <v>
+  Fill:    templates/results-tracker.md (as experiments run)
   Gate:    All contributions have experiments; no MISSING claims; blueprint complete
 
 PHASE 1 — SCOPING
@@ -101,6 +104,7 @@ PHASE 7 — REVISION
 | Domain-Referee | Simulates robotics reviewer | Review reports only |
 | Methods-Referee | Audits experimental rigor | Review reports only |
 | Editor | Simulates AC/PC, synthesizes reviews | Editorial report only |
+| Benchmark-Mapper | Maps research question to benchmarks, tasks, metrics | Benchmark map |
 | Experiment-Planner | Designs experiments before writing | Experiment plan |
 | Claim-Tracker | Maps claims to evidence, flags gaps | Claim-evidence map |
 
@@ -113,9 +117,11 @@ Planning agents produce plans and maps, never paper text.
 
 | Output file | Created by | Purpose |
 |-------------|-----------|---------|
+| `outputs/benchmark-map-<date>.md` | `/map-benchmarks` | Benchmark/task/metric recommendations |
 | `outputs/experiment-plan-<date>.md` | `/plan-experiments` | Contract: what experiments prove what |
 | `outputs/claim-evidence-map-<date>.md` | `/track-claims` | Living map of claim → evidence |
 | `outputs/figures-plan-<date>.md` | `/plan-figures` | Blueprint of tables and figures |
+| `templates/results-tracker.md` | User (filled during experiments) | Single source of truth for numbers |
 
 ---
 

@@ -25,6 +25,35 @@ alignment, (3) IEEE format compliance, (4) robotics-specific completeness.
 
 ## Review protocol
 
+### Dimension 0: Phase 0 artifact consistency (run first if artifacts exist)
+
+Before reviewing the text, check whether Phase 0 artifacts are present:
+- `outputs/experiment-plan-<date>.md` (most recent APPROVED plan)
+- `outputs/claim-evidence-map-<date>.md` (Stage A or B)
+- `outputs/figures-plan-<date>.md`
+
+**If experiment plan exists:**
+- Compare baselines in the draft vs. baselines in the plan. Any baseline in draft but not in
+  plan = flag MAJOR (plan deviation).
+- Compare N trials reported vs. N specified in protocol. Under-reported N = flag MAJOR (INV-3 risk).
+- Compare success criterion in experimental setup vs. plan. Mismatch = flag CRITICAL (claim validity risk).
+- Check that the ablation table covers all components listed in the ablation schedule. Missing row
+  for a planned component = flag CRITICAL (INV-12).
+
+**If claim-evidence map exists:**
+- Any claim in the draft with status MISSING in the map = flag CRITICAL.
+- Any claim in the draft with status PLANNED (not yet SUPPORTED) = flag MAJOR with note
+  "experiment result not yet incorporated."
+- Any claim SUPPORTED in the map: verify the number in the draft matches the map entry (INV-9).
+
+**If figures plan exists:**
+- Any figure/table in the draft not listed in the plan = flag MAJOR (potential unplanned result).
+- Any figure/table in the plan missing from the draft = flag MAJOR (planned visual not implemented).
+
+If no Phase 0 artifacts exist, skip Dimension 0 and proceed from Dimension 1.
+
+---
+
 ### Dimension 1: Claims-evidence alignment
 
 For every claim in the section:
@@ -88,6 +117,15 @@ Flag each violation with its INV number and severity.
 
 Start at 100. Deduct:
 
+| Dimension 0 — Plan consistency | Deduction |
+|---|---|
+| CRITICAL: claim in draft is MISSING in claim-evidence map | −25 |
+| CRITICAL: success criterion differs from approved experiment plan | −20 |
+| CRITICAL: ablation row missing (in plan, absent from draft) | −15 |
+| MAJOR: baseline in draft not in experiment plan (unexplained deviation) | −10 |
+| MAJOR: N trials under-reported vs. plan | −10 |
+| MAJOR: table/figure in draft not listed in figures plan | −8 |
+
 | Issue type | Deduction |
 |------------|-----------|
 | CRITICAL: fabricated or unsupported quantitative claim | −25 |
@@ -116,6 +154,20 @@ Minimum score: 0. Score below 70 = BLOCKED (Writer must revise before this secti
 Reviewed: <date>
 Score: <N>/100
 Status: [BLOCKED <70 | REVISE 70-89 | PASS ≥90]
+Phase 0 artifacts loaded: [experiment-plan / claim-map / figures-plan — or "none"]
+
+---
+
+### Dimension 0: Plan consistency
+[PASS — no plan artifacts / PASS — consistent / ISSUES — list below]
+
+| Check | Status | Notes |
+|-------|--------|-------|
+| Baselines match plan | PASS/FAIL | |
+| N trials ≥ plan protocol | PASS/FAIL | |
+| Success criterion matches plan | PASS/FAIL | |
+| All planned ablation rows present | PASS/FAIL | |
+| All claims SUPPORTED in map | PASS/FAIL | |
 
 ---
 

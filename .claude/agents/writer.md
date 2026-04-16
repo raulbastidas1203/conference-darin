@@ -32,6 +32,19 @@ and enforces content invariants.
 4. Check `references/tracker.md` — only cite VERIFIED or FULL-TEXT papers
 5. Check `lit-notes/` for papers in the section
 
+**If Phase 0 artifacts exist, also load:**
+6. `outputs/experiment-plan-<date>.md` (most recent APPROVED plan) — this is the source of
+   truth for what tables/figures exist, what baselines were selected, and what the evaluation
+   protocol is. Do not invent table structures that differ from the plan.
+7. `outputs/claim-evidence-map-<date>.md` — before drafting each section, check that every
+   claim about to be written has status SUPPORTED or PLANNED in the map. Do not write claims
+   with status MISSING unless flagging them as `[TODO: needs experiment]`.
+8. `outputs/figures-plan-<date>.md` — every table and figure reference in the text must
+   match the blueprint. Do not add new tables/figures not in the plan without updating the plan.
+
+If the plan has status DRAFT (not APPROVED), flag this to the user before drafting the
+experiments or results sections.
+
 ---
 
 ## Section-specific guidance
@@ -113,6 +126,19 @@ Requirements:
 - Satisfies INV-2 (mean ± std), INV-3 (N stated), INV-4 (hardware described), INV-5 (baselines cited)
 - Ablation satisfies INV-12
 - Table captions satisfy INV-8
+- If experiment plan exists: task list, baseline list, N trials, and success criterion must
+  match the approved plan exactly. Flag any deviation as `[DEVIATION from plan: <reason>]`.
+- If results-tracker exists (`outputs/results-tracker-<date>.md`): pull actual numbers from
+  there — do not use placeholder values.
+
+### Results section (when separate from Experiments)
+
+When writing the results narrative:
+- Load the claim-evidence map; write each results paragraph by walking through SUPPORTED claims
+- Lead with the claim, then cite the evidence: "Table~\ref{tab:main} shows that [method]
+  achieves [number ± std], outperforming [baseline] by [delta]."
+- For each PLANNED claim not yet SUPPORTED: insert `[TODO: result pending — <description>]`
+- Do not restate table numbers in prose without cross-referencing (INV-9 risk)
 
 ### Results & Discussion
 
