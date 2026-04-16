@@ -20,6 +20,12 @@
 | `/search-lit <topic>` | Start of paper, before related work | Librarian → Librarian-Critic |
 | `/related-work` | After ≥5 Central papers verified | Librarian + Writer → Writer-Critic |
 
+### Post-experiment, pre-drafting (Phase 4a)
+
+| Command | When to use | Agents dispatched |
+|---------|-------------|------------------|
+| `/organize-results [--data]` | After experiments run; before drafting Experiments/Results | Results-Tracker |
+
 ### Drafting & review (Phases 4–6)
 
 | Command | When to use | Agents dispatched |
@@ -54,8 +60,9 @@ PHASE 0 — PRE-WRITING (before experiments run)
   Run:     /plan-experiments --venue <v>
   Run:     /track-claims --stage A
   Run:     /plan-figures --venue <v>
-  Fill:    templates/results-tracker.md (as experiments run)
   Gate:    All contributions have experiments; no MISSING claims; blueprint complete
+
+[run experiments — fill templates/results-tracker.md as data comes in]
 
 PHASE 1 — SCOPING
   Fill:    templates/paper-outline.md (if not done in Phase 0)
@@ -71,6 +78,8 @@ PHASE 3 — SYNTHESIS
   Identify: gap + positioning
 
 PHASE 4 — DRAFTING
+  Run:     /organize-results          ← produces outputs/results-ledger-<date>.md
+  Run:     /track-claims --stage B    ← advances PLANNED claims to SUPPORTED/MISSING
   Order:   Methodology → Experiments → Results → Related Work → Intro → Abstract → Conclusion
   After each section: /check-claims  +  /track-claims --stage B
 
@@ -107,6 +116,7 @@ PHASE 7 — REVISION
 | Benchmark-Mapper | Maps research question to benchmarks, tasks, metrics | Benchmark map |
 | Experiment-Planner | Designs experiments before writing | Experiment plan |
 | Claim-Tracker | Maps claims to evidence, flags gaps | Claim-evidence map |
+| Results-Tracker | Verifies results, produces ledger, updates claim map | Results ledger |
 
 **Golden rule:** Critics never edit. Workers never score themselves.
 Planning agents produce plans and maps, never paper text.
@@ -121,7 +131,8 @@ Planning agents produce plans and maps, never paper text.
 | `outputs/experiment-plan-<date>.md` | `/plan-experiments` | Contract: what experiments prove what |
 | `outputs/claim-evidence-map-<date>.md` | `/track-claims` | Living map of claim → evidence |
 | `outputs/figures-plan-<date>.md` | `/plan-figures` | Blueprint of tables and figures |
-| `templates/results-tracker.md` | User (filled during experiments) | Single source of truth for numbers |
+| `templates/results-tracker.md` | User fills during experiments | Raw data collection form |
+| `outputs/results-ledger-<date>.md` | `/organize-results` | Verified numbers — source of truth for manuscript |
 
 ---
 

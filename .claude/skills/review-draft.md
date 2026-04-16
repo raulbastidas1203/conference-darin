@@ -25,7 +25,9 @@ in parallel, then synthesizes a scored report.
    - `outputs/experiment-plan-<date>.md` → passed to Methods-Referee and Writer-Critic
    - `outputs/claim-evidence-map-<date>.md` → passed to Writer-Critic (Stage B update)
    - `outputs/figures-plan-<date>.md` → passed to Writer-Critic
-   - `outputs/results-tracker-<date>.md` → passed to Methods-Referee for number verification
+   - `outputs/results-ledger-<date>.md` → passed to Methods-Referee and Writer-Critic for
+     number verification (INV-9) and plan-adherence check; this is the verified ledger
+     produced by `/organize-results`, not the raw tracker template
 4. **Dispatches in parallel:**
    - Domain-Referee — novelty, positioning, technical content
    - Methods-Referee — experimental rigor, reproducibility, plan adherence (Phase 0)

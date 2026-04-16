@@ -34,13 +34,14 @@ own work. This separation is enforced throughout all workflows.
 | — | Methods-Referee | Experimental rigor & reproducibility |
 | — | Editor | Venue simulation & desk review |
 
-**Pre-writing planning agents** (no worker-critic pair; produce plans, not paper text):
+**Pre-writing and results planning agents** (no worker-critic pair; produce plans and ledgers, not paper text):
 
 | Agent | Domain |
 |-------|--------|
 | Benchmark-Mapper | Benchmark/task selection, evaluation scope, venue-calibrated gap analysis |
 | Experiment-Planner | Experiment design, baseline roster, evaluation protocol, ablation schedule |
 | Claim-Tracker | Claim-to-evidence mapping, gap detection, INV-9 audit |
+| Results-Tracker | Results verification, ledger production, arithmetic/INV-2 consistency, plan-adherence |
 
 **Separation of powers:** Critics produce reports and scores, never artifacts. Workers produce
 artifacts, never self-scores. Planning agents produce structured plans and maps, never paper text.
@@ -91,6 +92,12 @@ No submission gate override. If score < 90, the blocking issues must be resolved
 |---------|---------|---------------|
 | `/search-lit` | Systematic literature search | Librarian → Librarian-Critic |
 | `/related-work` | Synthesis + comparison table | Librarian + Writer |
+
+**Post-experiment / pre-drafting:**
+
+| Command | Purpose | Agent dispatch |
+|---------|---------|---------------|
+| `/organize-results [--data]` | Verify results, produce ledger, update claim map | Results-Tracker |
 
 **Drafting & review (Phases 4–6):**
 
@@ -153,6 +160,8 @@ Phase 3 — SYNTHESIS
   Gate: gap is clearly stated and no competitor is misrepresented
 
 Phase 4 — DRAFTING
+  Run: /organize-results               (produces outputs/results-ledger-<date>.md)
+  Run: /track-claims --stage B         (advances PLANNED claims to SUPPORTED/MISSING)
   Order: Methodology → Experiments → Results → Related Work → Introduction → Abstract → Conclusion
   Run: /check-claims after each section
   Run: /track-claims --stage B after each major section
@@ -271,7 +280,10 @@ Esta convención aplica a toda sesión donde se pusheen cambios, sin excepción.
 
 **conference-Darin does:**
 - Design experiment plans: benchmark selection, baseline roster, evaluation protocol, ablation schedule
+- Map research questions to benchmarks with venue-calibrated gap analysis (`/map-benchmarks`)
 - Build claim-to-evidence maps before and during drafting
+- Organize experimental results into a verified ledger before drafting (`/organize-results`)
+- Verify number consistency (arithmetic, INV-2, INV-9) across results data and manuscript
 - Plan figure/table structure with INV compliance assignments
 - Search literature via open APIs (Semantic Scholar, arXiv, DBLP, OpenAlex, Crossref)
 - Verify citations and flag unverifiable ones
@@ -291,19 +303,22 @@ Esta convención aplica a toda sesión donde se pusheen cambios, sin excepción.
 /lit-notes/         Per-paper reading notes (one file per paper)
 /references/        references.bib + tracker.md (classification table)
 /outputs/           Skill outputs, quality reports, review logs
-                    (experiment plans, claim maps, figure blueprints, reviews)
+                    (experiment plans, claim maps, figure blueprints,
+                     results ledger, reviews)
 /templates/         IEEE paper outline, comparison table, revision response,
-                    experiment plan, claim-evidence map
+                    experiment plan, claim-evidence map,
+                    results-tracker (data entry), results-ledger (verified)
 /workflows/         Process guides (pre-writing, new-paper, lit-review, submission-prep)
 /.claude/
-  /agents/          10 agent role specifications
+  /agents/          11 agent role specifications
                     (Librarian, Librarian-Critic, Writer, Writer-Critic,
                      Domain-Referee, Methods-Referee, Editor,
-                     Benchmark-Mapper, Experiment-Planner, Claim-Tracker)
+                     Benchmark-Mapper, Experiment-Planner, Claim-Tracker,
+                     Results-Tracker)
   /references/      Domain knowledge (profile, venues, methods, benchmarks)
   /rules/           Content invariants (20 standards, CRITICAL/MAJOR severity)
-  /skills/          11 skill implementations
+  /skills/          12 skill implementations
                     (search-lit, related-work, map-benchmarks, plan-experiments,
-                     track-claims, plan-figures, check-claims, review-draft,
-                     simulate-review, revision-letter, ieee-checklist)
+                     track-claims, plan-figures, organize-results, check-claims,
+                     review-draft, simulate-review, revision-letter, ieee-checklist)
 ```
