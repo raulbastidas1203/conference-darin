@@ -38,7 +38,8 @@ own work. This separation is enforced throughout all workflows.
 
 | Agent | Domain |
 |-------|--------|
-| Experiment-Planner | Experiment design, benchmark/task selection, baseline roster, ablation schedule |
+| Benchmark-Mapper | Benchmark/task selection, evaluation scope, venue-calibrated gap analysis |
+| Experiment-Planner | Experiment design, baseline roster, evaluation protocol, ablation schedule |
 | Claim-Tracker | Claim-to-evidence mapping, gap detection, INV-9 audit |
 
 **Separation of powers:** Critics produce reports and scores, never artifacts. Workers produce
@@ -79,6 +80,7 @@ No submission gate override. If score < 90, the blocking issues must be resolved
 
 | Command | Purpose | Agent dispatch |
 |---------|---------|---------------|
+| `/map-benchmarks [--venue]` | Recommend benchmarks, tasks, metrics, and gap analysis | Benchmark-Mapper |
 | `/plan-experiments [--venue]` | Design experiment plan from contribution statement | Librarian + Experiment-Planner + Claim-Tracker |
 | `/track-claims [--stage A\|B]` | Build/update claim-to-evidence map | Claim-Tracker (+ Librarian for INV-17) |
 | `/plan-figures [--venue]` | Plan figure/table structure and visual narrative | Writer + Writer-Critic |
@@ -112,10 +114,11 @@ Phase 0 — PRE-WRITING (before any manuscript text)
     Fill: templates/paper-outline.md (contribution list, venue, problem statement)
     Gate: contribution is falsifiable and specific
 
-  0.2 LITERATURE AND BASELINES
+  0.2 LITERATURE, BENCHMARKS, AND BASELINES
     Run: /search-lit <topic> (2–3 queries)
-    Build: references/tracker.md; identify baselines and benchmarks
-    Gate: ≥5 Central papers verified; baselines identified
+    Run: /map-benchmarks --venue <venue>
+    Build: references/tracker.md; benchmark-map output feeds into experiment plan
+    Gate: ≥5 Central papers verified; benchmarks mapped; no BLOCKING gaps
 
   0.3 EXPERIMENT DESIGN
     Run: /plan-experiments --venue <venue>
@@ -249,7 +252,7 @@ Key invariants (abbreviated):
 1. Commitear los cambios con mensaje descriptivo
 2. Pushear al branch de trabajo (`claude/...` o feature branch)
 3. Crear un PR a `master` usando el GitHub MCP tool (`mcp__github__create_pull_request`)
-   - `owner`: `raulbastidas1203`, `repo`: `conference-darin`, `base`: `master`
+   - `owner`: `raulbastidas1203`, `repo`: `conference-darin`, `base`: `main`
    - Incluir en el body: qué cambió, por qué, y test plan
 4. No hacer merge sin aprobación explícita del usuario
 
@@ -293,14 +296,14 @@ Esta convención aplica a toda sesión donde se pusheen cambios, sin excepción.
                     experiment plan, claim-evidence map
 /workflows/         Process guides (pre-writing, new-paper, lit-review, submission-prep)
 /.claude/
-  /agents/          9 agent role specifications
+  /agents/          10 agent role specifications
                     (Librarian, Librarian-Critic, Writer, Writer-Critic,
                      Domain-Referee, Methods-Referee, Editor,
-                     Experiment-Planner, Claim-Tracker)
+                     Benchmark-Mapper, Experiment-Planner, Claim-Tracker)
   /references/      Domain knowledge (profile, venues, methods, benchmarks)
   /rules/           Content invariants (20 standards, CRITICAL/MAJOR severity)
-  /skills/          10 skill implementations
-                    (search-lit, related-work, plan-experiments, track-claims,
-                     plan-figures, check-claims, review-draft, simulate-review,
-                     revision-letter, ieee-checklist)
+  /skills/          11 skill implementations
+                    (search-lit, related-work, map-benchmarks, plan-experiments,
+                     track-claims, plan-figures, check-claims, review-draft,
+                     simulate-review, revision-letter, ieee-checklist)
 ```

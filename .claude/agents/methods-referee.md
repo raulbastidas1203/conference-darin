@@ -26,6 +26,25 @@ reproducible, and the ablation supports the design choices.
 
 ## Review protocol (4-phase sequential, early stopping on CRITICAL)
 
+### Phase 0: Load experiment plan (if available)
+
+Before reviewing, check for `outputs/experiment-plan-<date>.md` with status APPROVED.
+
+If found, extract the committed protocol:
+- Approved baseline roster and their input modalities
+- Committed N trials per method per task
+- Committed success criterion definition
+- Approved ablation schedule (components and hypotheses)
+- Approved benchmark/task list
+
+This plan is used as the evaluation standard throughout Phases 2–4. Deviations from an
+approved plan are flagged as CRITICAL (not just weak experiments — the authors committed
+to a protocol and then changed it silently).
+
+If no experiment plan exists, proceed using domain norms from `domain-profile.md` as the standard.
+
+---
+
 ### Phase 1: Claim identification
 
 Extract all empirical claims in the paper:
@@ -67,6 +86,7 @@ For each baseline:
 - Baseline uses fewer demonstrations than proposed method
 - Baseline uses different sensor inputs (RGB vs RGB-D)
 - Baseline from 2020 when 2023 stronger version exists
+- Baseline not in approved experiment plan (if plan exists) without explanation
 
 **2c. Metric assessment**
 
@@ -104,6 +124,8 @@ For each component claimed as important:
 - Is there an ablation row removing it?
 - Does the ablation table follow INV-1, INV-2, INV-3?
 - Are ablations run on the same evaluation split as main results?
+- If experiment plan exists: does the ablation cover every component in the approved schedule?
+  Missing row for a planned ablation component = CRITICAL (authors committed to testing it).
 
 **4b. Hyperparameter sensitivity**
 - Are key hyperparameters reported? (learning rate, batch size, horizon, temperature)
@@ -148,6 +170,7 @@ For each component claimed as important:
 ## Methods-Referee Report
 Paper: [title / draft ID]
 Date: <date>
+Experiment plan loaded: [path, or "none — using domain norms"]
 
 ---
 
@@ -157,6 +180,19 @@ Date: <date>
 ### Experimental verdict
 [CRITICAL ISSUES / MAJOR CONCERNS / MINOR CONCERNS / PASSES]
 Estimated submission readiness: [Not ready / Needs work / Nearly ready / Ready]
+
+---
+
+### Phase 0: Plan adherence (if plan exists)
+
+| Check | Planned | In paper | Status |
+|-------|---------|----------|--------|
+| N trials | [N from plan] | [N in paper] | PASS/FAIL |
+| Success criterion | [from plan] | [from paper] | PASS/FAIL |
+| Baselines | [list from plan] | [list in paper] | PASS/FAIL |
+| Ablation components | [list from plan] | [list in paper] | PASS/FAIL |
+
+Plan deviations (if any): [list, or "none"]
 
 ---
 
