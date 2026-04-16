@@ -191,6 +191,20 @@ Key invariants (abbreviated):
 
 ---
 
+## Git & PR Convention
+
+**Siempre que se complete trabajo en este repo:**
+1. Commitear los cambios con mensaje descriptivo
+2. Pushear al branch de trabajo (`claude/...` o feature branch)
+3. Crear un PR a `master` usando el GitHub MCP tool (`mcp__github__create_pull_request`)
+   - `owner`: `raulbastidas1203`, `repo`: `telecodex`, `base`: `master`
+   - Incluir en el body: qué cambió, por qué, y test plan
+4. No hacer merge sin aprobación explícita del usuario
+
+Esta convención aplica a toda sesión donde se pusheen cambios, sin excepción.
+
+---
+
 ## Limitations
 
 **conference-Darin does NOT:**
