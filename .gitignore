@@ -1,8 +1,4 @@
-# Papers provistos por el usuario (pueden ser sensibles o grandes)
-papers/*.pdf
-papers/*.PDF
-
-# PDFs generados localmente
+# PDFs generados localmente (LaTeX output — no trackear, son artifacts de build)
 drafts/*.pdf
 drafts/*.PDF
 outputs/*.pdf
