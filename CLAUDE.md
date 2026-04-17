@@ -77,32 +77,48 @@ No submission gate override. If score < 90, the blocking issues must be resolved
 
 ## Available Commands
 
+All commands are available as conversational triggers. Commands marked ✅ also appear in the
+Claude Code chat `/` menu via `.claude/commands/` wrappers that delegate to `.claude/skills/`.
+
 **Pre-writing (Phase 0 — before any draft exists):**
 
-| Command | Purpose | Agent dispatch |
-|---------|---------|---------------|
-| `/map-benchmarks [--venue]` | Recommend benchmarks, tasks, metrics, and gap analysis | Benchmark-Mapper |
-| `/plan-experiments [--venue]` | Design experiment plan from contribution statement | Librarian + Experiment-Planner + Claim-Tracker |
-| `/track-claims [--stage A\|B]` | Build/update claim-to-evidence map | Claim-Tracker (+ Librarian for INV-17) |
-| `/plan-figures [--venue]` | Plan figure/table structure and visual narrative | Writer + Writer-Critic |
+| Command | Purpose | Agent dispatch | Slash command |
+|---------|---------|---------------|---------------|
+| `/map-benchmarks [--venue]` | Recommend benchmarks, tasks, metrics, and gap analysis | Benchmark-Mapper | — |
+| `/plan-experiments [--venue]` | Design experiment plan from contribution statement | Librarian + Experiment-Planner + Claim-Tracker | — |
+| `/track-claims [--stage A\|B]` | Build/update claim-to-evidence map | Claim-Tracker (+ Librarian for INV-17) | — |
+| `/plan-figures [--venue]` | Plan figure/table structure and visual narrative | Writer + Writer-Critic | — |
 
 **Literature & synthesis (Phases 2–3):**
 
-| Command | Purpose | Agent dispatch |
-|---------|---------|---------------|
-| `/search-lit` | Systematic literature search | Librarian → Librarian-Critic |
-| `/analyze-gaps` | Gap analysis + research-direction discovery | Gap-Analyst |
-| `/related-work` | Synthesis + comparison table | Librarian + Writer |
+| Command | Purpose | Agent dispatch | Slash command |
+|---------|---------|---------------|---------------|
+| `/search-lit` | Systematic literature search | Librarian → Librarian-Critic | ✅ |
+| `/analyze-gaps` | Gap analysis + research-direction discovery | Gap-Analyst | ✅ |
+| `/related-work` | Synthesis + comparison table | Librarian + Writer | ✅ |
 
 **Drafting & review (Phases 4–6):**
 
-| Command | Purpose | Agent dispatch |
-|---------|---------|---------------|
-| `/review-draft` | Full critical review | Domain-Referee + Methods-Referee + Writer-Critic |
-| `/check-claims` | Claims-evidence audit (draft) | Writer-Critic |
-| `/simulate-review [venue]` | Venue peer review simulation | Editor → Referees |
-| `/revision-letter` | Response to reviewers | Writer |
-| `/ieee-checklist [--venue]` | Pre-submission verification | Writer-Critic |
+| Command | Purpose | Agent dispatch | Slash command |
+|---------|---------|---------------|---------------|
+| `/review-draft` | Full critical review | Domain-Referee + Methods-Referee + Writer-Critic | ✅ |
+| `/check-claims` | Claims-evidence audit (draft) | Writer-Critic | ✅ |
+| `/simulate-review [venue]` | Venue peer review simulation | Editor → Referees | ✅ |
+| `/revision-letter` | Response to reviewers | Writer | ✅ |
+| `/ieee-checklist [--venue]` | Pre-submission verification | Writer-Critic | ✅ |
+
+**How the slash command layer works:**
+
+```
+.claude/commands/<skill>.md   ← slash command entry point; thin wrapper
+        │
+        └── delegates to ──▶  .claude/skills/<skill>.md   ← full protocol, source of truth
+                                        │
+                                        └── dispatches ──▶  .claude/agents/<agent>.md
+```
+
+Logic lives in `skills/`. Commands are entry points only. Never edit `commands/` to add logic —
+edit `skills/` instead. Commands marked — have no wrapper yet; invoke them conversationally.
 
 ---
 
@@ -303,6 +319,13 @@ Esta convención aplica a toda sesión donde se pusheen cambios, sin excepción.
                     experiment plan, claim-evidence map
 /workflows/         Process guides (pre-writing, new-paper, lit-review, submission-prep)
 /.claude/
+<<<<<<< HEAD
+  /commands/        Slash command entry points (wrappers — logic lives in /skills/)
+  /agents/          Agent role specifications
+  /references/      Domain knowledge (profile, venues, methods, benchmarks)
+  /rules/           Content invariants
+  /skills/          Skill implementations (source of truth for all command logic)
+=======
   /agents/          10 agent role specifications
                     (Librarian, Librarian-Critic, Writer, Writer-Critic,
                      Domain-Referee, Methods-Referee, Editor,
@@ -313,4 +336,5 @@ Esta convención aplica a toda sesión donde se pusheen cambios, sin excepción.
                     (search-lit, related-work, map-benchmarks, plan-experiments,
                      track-claims, plan-figures, check-claims, review-draft,
                      simulate-review, revision-letter, ieee-checklist)
+>>>>>>> origin/main
 ```
