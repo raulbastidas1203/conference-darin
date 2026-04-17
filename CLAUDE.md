@@ -29,6 +29,7 @@ own work. This separation is enforced throughout all workflows.
 | Worker | Critic | Domain |
 |--------|--------|--------|
 | Librarian | Librarian-Critic | Literature search & coverage |
+| Gap-Analyst | — | Gap identification & research directions |
 | Writer | Writer-Critic | Paper drafting & IEEE compliance |
 | — | Domain-Referee | Robotics expertise & novelty |
 | — | Methods-Referee | Experimental rigor & reproducibility |
@@ -90,6 +91,7 @@ No submission gate override. If score < 90, the blocking issues must be resolved
 | Command | Purpose | Agent dispatch |
 |---------|---------|---------------|
 | `/search-lit` | Systematic literature search | Librarian → Librarian-Critic |
+| `/analyze-gaps` | Gap analysis + research-direction discovery | Gap-Analyst |
 | `/related-work` | Synthesis + comparison table | Librarian + Writer |
 
 **Drafting & review (Phases 4–6):**
@@ -146,6 +148,11 @@ Phase 2 — DISCOVERY
   Classify each paper: Central / Related / Marginal
   Build: references/tracker.md entries
   Gate: ≥ 5 central papers with at least 1 from ICRA/IROS/CoRL/RSS/RA-L/T-RO
+
+Phase 2b — GAP ANALYSIS  [optional but recommended before committing to a direction]
+  Run: /analyze-gaps [--venue <venue>]
+  Output: landscape map, saturated vs. open areas, 3–5 candidate directions, recommendation
+  Gate: recommended direction has plausibility ≥ 3/5; user confirms direction before Phase 3
 
 Phase 3 — SYNTHESIS
   Run: /related-work
