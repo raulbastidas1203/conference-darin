@@ -42,12 +42,19 @@ Updated by `/search-lit` (CANDIDATE entries) and manually when papers are read (
 
 | Key | Title | First Author | Venue / Year | Source | Relevance | Access | Status | Read | Notes |
 |-----|-------|-------------|-------------|--------|-----------|--------|--------|------|-------|
-| `lhm2025humanoid` | LHM-Humanoid: Learning a Unified Policy for Long-Horizon Humanoid Whole-Body Loco-Manipulation in Diverse Messy Environments | — (verify) | arXiv 2025 | Preprint | Central | Free | CANDIDATE | Unread | Authors unconfirmed — verify at arXiv:2508.16943 before citing |
-| `humanoidcoa2025` | Humanoid Agent via Embodied Chain-of-Action Reasoning with Multimodal Foundation Models for Zero-Shot Loco-Manipulation | — (verify) | arXiv 2025 | Preprint | Central | Free | CANDIDATE | Unread | Authors unconfirmed — verify at arXiv:2504.09532 |
+| `lhm2025humanoid` | LHM-Humanoid: Learning a Unified Policy for Long-Horizon Humanoid Whole-Body Loco-Manipulation in Diverse Messy Environments | Zhang H. (+ Sun J., Caprio M., Tang J., Zhang S., Zhang Q., Pan W.) | arXiv 2025 | Preprint | Central | Free | FULL-TEXT | Unread | PDF in /papers/ |
+| `humanoidcoa2025` | Humanoid Agent via Embodied Chain-of-Action Reasoning with Multimodal Foundation Models for Zero-Shot Loco-Manipulation | Wen C. (+ Bethala G., Hao Y., Pudasaini N., Huang H., Yuan S., Huang B., Nguyen A., Wang M., Tzes A., Fang Y.) | arXiv 2025 | Preprint | Central | Free | FULL-TEXT | Unread | PDF in /papers/ |
+| `ieee2024safewarehouse` | Safe Human Robot Navigation in Warehouse Scenario | Farrell S., Li C., Yu H., Yoshimitsu R., Gao S., Christensen H.I. | IEEE 2024 | Conference | Central | Paywall | FULL-TEXT | Unread | PDF in /papers/; CBF-based safety for humanoid in warehouse |
+| `humanoidcat2026` | Learning Humanoid Loco-manipulation with Constraints as Terminations | Leziart P-A., Morisawa M., Kanehiro F. | SII 2026 (IEEE/SICE) | Conference | Central | Free | FULL-TEXT | Unread | PDF in /papers/; DOI:10.1109/SII64115.2026.11404486; venue corrected from tracker |
 | `zhang2025falcon` | FALCON: Learning Force-Adaptive Humanoid Loco-Manipulation | Zhang Y. (CMU) | arXiv / L4DC 2026 | Preprint | Central | Free | CANDIDATE | Unread | Force-adaptive WBC; cart, payload, door tasks |
 | `rollo2023semantic` | Semantic-based Loco-Manipulation for Human-Robot Collaboration in Industrial Environments | Rollo F. | arXiv / Springer 2023 | Preprint | Central | Free | CANDIDATE | Unread | Industrial environment; "bring me object" scenario |
 | `peron2025pixels` | From Pixels to Shelf: End-to-End Algorithmic Control for Supermarket Stocking and Fronting | Peron D. | arXiv 2025 | Preprint | Central | Free | CANDIDATE | Unread | 98% success on 724 events; closest real-world logistics analogue |
-| `he2024hover` | HOVER: Versatile Neural Whole-Body Controller for Humanoid Robots | He T. (UT Austin) | arXiv 2024 | Preprint | Central | Free | CANDIDATE | Unread | Unifies navigation + loco-manip + tabletop via mode distillation |
+| `he2025hover` | HOVER: Versatile Neural Whole-Body Controller for Humanoid Robots | He T., Xiao W., Lin T., Luo Z., Xu Z., Jiang Z., Liu C., Shi G., Wang X., Fan L., Zhu Y. | ICRA 2025 | Conference | Central | Free | VERIFIED | Unread | arXiv:2410.21229; confirmed ICRA 2025; unifies nav + loco-manip + tabletop |
+| `dao2024boxloco` | Sim-to-Real Learning for Humanoid Box Loco-Manipulation | Dao J., Duan H., Fern A. | ICRA 2024 | Conference | Central | Free | VERIFIED | Unread | arXiv:2310.03191; box pickup+carry on Digit humanoid; warehouse-relevant |
+| `rigo2024heavyloco` | Hierarchical Optimization-Based Control for Whole-Body Loco-Manipulation of Heavy Objects | Rigo A., Hu M., Gupta S.K., Nguyen Q. | ICRA 2024 | Conference | Central | Free | VERIFIED | Unread | arXiv:2311.00112; 8kg payload on legged robot via MPC |
+| `mobiletv2025` | Mobile-TeleVision: Predictive Motion Priors for Humanoid Whole-Body Control | — (verify authors) | ICRA 2025 | Conference | Related | Free | CANDIDATE | Unread | arXiv:2412.07773; decoupled upper-body via CVAE; teleoperation + manipulation |
+| `hat2025humanoid` | Humanoid Policy ~ Human Policy (HAT) | — (verify authors) | ICRA 2025 | Conference | Related | Free | CANDIDATE | Unread | arXiv:2503.13441; cross-embodiment from egocentric demos |
+| `li2023hector` | Dynamic Loco-Manipulation on HECTOR: Humanoid for Enhanced ConTrol and Open-source Research | Li J. et al. (USC) | ICRA 2023/2024 (verify) | Conference | Related | Free | CANDIDATE | Unread | arXiv:2312.11868; MPC-based; 2.5kg carry; venue year needs confirmation |
 | `gu2025survey` | Humanoid Locomotion and Manipulation: Current Progress and Challenges | Gu Z. | arXiv 2025 | Preprint | Related | Free | CANDIDATE | Unread | Comprehensive survey; required background reading |
 | `noreils2024humanoids` | Humanoid Robots at work: where are we? | Noreils F. | arXiv 2024 | Preprint | Related | Free | CANDIDATE | Unread | Industrial deployment feasibility assessment |
 | `jiang2025behavior` | BEHAVIOR Robot Suite: Streamlining Real-World Whole-Body Manipulation | Jiang Y. (Stanford) | CoRL 2025 | Conference | Related | Free | CANDIDATE | Unread | Bimanual WBM framework; household but methods relevant |
@@ -76,8 +83,6 @@ Retrieve with university credentials and place in /papers/.
 
 | Key | Title | Authors | Venue / Year | DOI | Why needed |
 |-----|-------|---------|-------------|-----|-----------|
-| `ieee2024safewarehouse` | Safe Human Robot Navigation in Warehouse Scenario | — | IEEE 2024 | 10.1109/11164151 | Only paper explicitly combining humanoid + warehouse navigation safety (CBFs) |
-| `humanoidcat2025` | Learning Humanoid Loco-manipulation with Constraints as Terminations | — | IEEE Humanoids 2025 | 10.1109/11404486 | Package transport with stability constraints — direct baseline for warehouse parcel handling |
 
 ---
 
