@@ -35,8 +35,16 @@ own work. This separation is enforced throughout all workflows.
 | — | Methods-Referee | Experimental rigor & reproducibility |
 | — | Editor | Venue simulation & desk review |
 
+**Pre-writing planning agents** (no worker-critic pair; produce plans, not paper text):
+
+| Agent | Domain |
+|-------|--------|
+| Benchmark-Mapper | Benchmark/task selection, evaluation scope, venue-calibrated gap analysis |
+| Experiment-Planner | Experiment design, baseline roster, evaluation protocol, ablation schedule |
+| Claim-Tracker | Claim-to-evidence mapping, gap detection, INV-9 audit |
+
 **Separation of powers:** Critics produce reports and scores, never artifacts. Workers produce
-artifacts, never self-scores.
+artifacts, never self-scores. Planning agents produce structured plans and maps, never paper text.
 
 **Escalation protocol:** Worker-critic deadlock after 3 cycles → escalate to user with full
 context. User decision is final.
@@ -69,44 +77,87 @@ No submission gate override. If score < 90, the blocking issues must be resolved
 
 ## Available Commands
 
-All commands below are available as **slash commands in the Claude Code chat** (type `/` to
-see the menu) and as conversational triggers. Each command in `.claude/commands/` is a thin
-wrapper that delegates to the full protocol in `.claude/skills/`.
+All commands are available as conversational triggers. Commands marked ✅ also appear in the
+Claude Code chat `/` menu via `.claude/commands/` wrappers that delegate to `.claude/skills/`.
+
+**Pre-writing (Phase 0 — before any draft exists):**
+
+| Command | Purpose | Agent dispatch | Slash command |
+|---------|---------|---------------|---------------|
+| `/map-benchmarks [--venue]` | Recommend benchmarks, tasks, metrics, and gap analysis | Benchmark-Mapper | — |
+| `/plan-experiments [--venue]` | Design experiment plan from contribution statement | Librarian + Experiment-Planner + Claim-Tracker | — |
+| `/track-claims [--stage A\|B]` | Build/update claim-to-evidence map | Claim-Tracker (+ Librarian for INV-17) | — |
+| `/plan-figures [--venue]` | Plan figure/table structure and visual narrative | Writer + Writer-Critic | — |
+
+**Literature & synthesis (Phases 2–3):**
 
 | Command | Purpose | Agent dispatch | Slash command |
 |---------|---------|---------------|---------------|
 | `/search-lit` | Systematic literature search | Librarian → Librarian-Critic | ✅ |
 | `/analyze-gaps` | Gap analysis + research-direction discovery | Gap-Analyst | ✅ |
 | `/related-work` | Synthesis + comparison table | Librarian + Writer | ✅ |
-| `/review-draft` | Full critical review | Domain-Referee + Methods-Referee | ✅ |
-| `/check-claims` | Claims-evidence audit | Writer-Critic | ✅ |
+
+**Drafting & review (Phases 4–6):**
+
+| Command | Purpose | Agent dispatch | Slash command |
+|---------|---------|---------------|---------------|
+| `/review-draft` | Full critical review | Domain-Referee + Methods-Referee + Writer-Critic | ✅ |
+| `/check-claims` | Claims-evidence audit (draft) | Writer-Critic | ✅ |
 | `/simulate-review [venue]` | Venue peer review simulation | Editor → Referees | ✅ |
 | `/revision-letter` | Response to reviewers | Writer | ✅ |
 | `/ieee-checklist [--venue]` | Pre-submission verification | Writer-Critic | ✅ |
 
-**How the two layers work:**
+**How the slash command layer works:**
 
 ```
-.claude/commands/<skill>.md   ← registered as slash command; thin wrapper
+.claude/commands/<skill>.md   ← slash command entry point; thin wrapper
         │
         └── delegates to ──▶  .claude/skills/<skill>.md   ← full protocol, source of truth
                                         │
                                         └── dispatches ──▶  .claude/agents/<agent>.md
 ```
 
-When you type `/search-lit` in the chat, Claude Code loads the command wrapper, which
-instructs Claude to read and follow the full skill protocol. Logic lives in `skills/`.
-Commands are entry points only. Never edit `commands/` to add logic — edit `skills/` instead.
+Logic lives in `skills/`. Commands are entry points only. Never edit `commands/` to add logic —
+edit `skills/` instead. Commands marked — have no wrapper yet; invoke them conversationally.
 
 ---
 
 ## Workflow Phases
 
 ```
+Phase 0 — PRE-WRITING (before any manuscript text)
+  See: workflows/pre-writing.md for full protocol
+
+  0.1 PROBLEM DEFINITION
+    Fill: templates/paper-outline.md (contribution list, venue, problem statement)
+    Gate: contribution is falsifiable and specific
+
+  0.2 LITERATURE, BENCHMARKS, AND BASELINES
+    Run: /search-lit <topic> (2–3 queries)
+    Run: /map-benchmarks --venue <venue>
+    Build: references/tracker.md; benchmark-map output feeds into experiment plan
+    Gate: ≥5 Central papers verified; benchmarks mapped; no BLOCKING gaps
+
+  0.3 EXPERIMENT DESIGN
+    Run: /plan-experiments --venue <venue>
+    Output: outputs/experiment-plan-<date>.md
+    Gate: ALL contributions map to experiments; N meets domain minimum; ablation complete
+
+  0.4 CLAIM REGISTER (Stage A)
+    Run: /track-claims --stage A
+    Output: outputs/claim-evidence-map-<date>.md
+    Gate: no MISSING claims; SPECULATIVE claims routed to literature check
+
+  0.5 FIGURE/TABLE BLUEPRINT
+    Run: /plan-figures --venue <venue>
+    Output: outputs/figures-plan-<date>.md
+    Gate: every claim has a planned table/figure; fits page limit
+
 Phase 1 — SCOPING
   Define: contribution, venue, deadline, co-authors
   Output: research spec (see templates/paper-outline.md)
   Gate: contribution must be falsifiable and specific before Phase 2
+  Note: if Phase 0 was completed, scoping is already done
 
 Phase 2 — DISCOVERY
   Run: /search-lit <tema principal>
@@ -127,7 +178,8 @@ Phase 3 — SYNTHESIS
 Phase 4 — DRAFTING
   Order: Methodology → Experiments → Results → Related Work → Introduction → Abstract → Conclusion
   Run: /check-claims after each section
-  Gate: no [TODO: cite] remaining; all claims have evidence
+  Run: /track-claims --stage B after each major section
+  Gate: no [TODO: cite] remaining; all claims have evidence; claim map shows no MISSING
 
 Phase 5 — REVIEW
   Run: /review-draft
@@ -137,7 +189,8 @@ Phase 5 — REVIEW
 Phase 6 — PRE-SUBMISSION
   Run: /simulate-review --venue <venue>
   Run: /ieee-checklist --venue <venue>
-  Gate: aggregate score ≥ 90
+  Run: /track-claims --update  (final evidence audit)
+  Gate: aggregate score ≥ 90; claim map fully SUPPORTED
 
 Phase 7 — POST-REVIEW (if revised)
   Run: /revision-letter
@@ -240,6 +293,9 @@ Esta convención aplica a toda sesión donde se pusheen cambios, sin excepción.
 - Download PDFs from paywalled sources
 
 **conference-Darin does:**
+- Design experiment plans: benchmark selection, baseline roster, evaluation protocol, ablation schedule
+- Build claim-to-evidence maps before and during drafting
+- Plan figure/table structure with INV compliance assignments
 - Search literature via open APIs (Semantic Scholar, arXiv, DBLP, OpenAlex, Crossref)
 - Verify citations and flag unverifiable ones
 - Synthesize related work with gap identification and comparison tables
@@ -258,12 +314,27 @@ Esta convención aplica a toda sesión donde se pusheen cambios, sin excepción.
 /lit-notes/         Per-paper reading notes (one file per paper)
 /references/        references.bib + tracker.md (classification table)
 /outputs/           Skill outputs, quality reports, review logs
-/templates/         IEEE paper, comparison table, revision response
-/workflows/         Process guides
+                    (experiment plans, claim maps, figure blueprints, reviews)
+/templates/         IEEE paper outline, comparison table, revision response,
+                    experiment plan, claim-evidence map
+/workflows/         Process guides (pre-writing, new-paper, lit-review, submission-prep)
 /.claude/
+<<<<<<< HEAD
   /commands/        Slash command entry points (wrappers — logic lives in /skills/)
   /agents/          Agent role specifications
   /references/      Domain knowledge (profile, venues, methods, benchmarks)
   /rules/           Content invariants
   /skills/          Skill implementations (source of truth for all command logic)
+=======
+  /agents/          10 agent role specifications
+                    (Librarian, Librarian-Critic, Writer, Writer-Critic,
+                     Domain-Referee, Methods-Referee, Editor,
+                     Benchmark-Mapper, Experiment-Planner, Claim-Tracker)
+  /references/      Domain knowledge (profile, venues, methods, benchmarks)
+  /rules/           Content invariants (20 standards, CRITICAL/MAJOR severity)
+  /skills/          11 skill implementations
+                    (search-lit, related-work, map-benchmarks, plan-experiments,
+                     track-claims, plan-figures, check-claims, review-draft,
+                     simulate-review, revision-letter, ieee-checklist)
+>>>>>>> origin/main
 ```

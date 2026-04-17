@@ -64,6 +64,26 @@ See `templates/comparison-table.md` for LaTeX templates.
 Verifies: each cited paper's role is clear; gap statement is specific; no misrepresented
 prior work; "first to" claims have INV-17 support; all cited papers are VERIFIED in tracker.
 
+## Claim-evidence map update (runs after Writer-Critic)
+
+After producing the related work draft, update or create `outputs/claim-evidence-map-<date>.md`:
+
+1. **Gap claims** — every statement of the form "no prior work addresses X" or "existing
+   methods fail at Y" becomes a SPECULATIVE entry in the claim register until the Librarian
+   confirms no counter-example exists. Mark each as:
+   ```
+   Type: About-prior-work / Novelty
+   Status: SPECULATIVE — needs Librarian verification for INV-17
+   ```
+
+2. **Positioning claims** — "unlike [X], our method does not require Y" → add as
+   SUPPORTED if [X] is a FULL-TEXT paper with a confirmed property. Add as SPECULATIVE
+   if [X] is only VERIFIED (abstract-level) and the specific limitation was not confirmed
+   in the full text.
+
+3. **"First to" claims** — always add as SPECULATIVE with a note to run `/search-lit`
+   with specific queries before the paper is submitted.
+
 ## Output
 
 ```markdown
