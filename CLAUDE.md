@@ -69,16 +69,34 @@ No submission gate override. If score < 90, the blocking issues must be resolved
 
 ## Available Commands
 
-| Command | Purpose | Agent dispatch |
-|---------|---------|---------------|
-| `/search-lit` | Systematic literature search | Librarian → Librarian-Critic |
-| `/analyze-gaps` | Gap analysis + research-direction discovery | Gap-Analyst |
-| `/related-work` | Synthesis + comparison table | Librarian + Writer |
-| `/review-draft` | Full critical review | Domain-Referee + Methods-Referee |
-| `/check-claims` | Claims-evidence audit | Writer-Critic |
-| `/simulate-review [venue]` | Venue peer review simulation | Editor → Referees |
-| `/revision-letter` | Response to reviewers | Writer |
-| `/ieee-checklist [--venue]` | Pre-submission verification | Writer-Critic |
+All commands below are available as **slash commands in the Claude Code chat** (type `/` to
+see the menu) and as conversational triggers. Each command in `.claude/commands/` is a thin
+wrapper that delegates to the full protocol in `.claude/skills/`.
+
+| Command | Purpose | Agent dispatch | Slash command |
+|---------|---------|---------------|---------------|
+| `/search-lit` | Systematic literature search | Librarian → Librarian-Critic | ✅ |
+| `/analyze-gaps` | Gap analysis + research-direction discovery | Gap-Analyst | ✅ |
+| `/related-work` | Synthesis + comparison table | Librarian + Writer | ✅ |
+| `/review-draft` | Full critical review | Domain-Referee + Methods-Referee | ✅ |
+| `/check-claims` | Claims-evidence audit | Writer-Critic | ✅ |
+| `/simulate-review [venue]` | Venue peer review simulation | Editor → Referees | ✅ |
+| `/revision-letter` | Response to reviewers | Writer | ✅ |
+| `/ieee-checklist [--venue]` | Pre-submission verification | Writer-Critic | ✅ |
+
+**How the two layers work:**
+
+```
+.claude/commands/<skill>.md   ← registered as slash command; thin wrapper
+        │
+        └── delegates to ──▶  .claude/skills/<skill>.md   ← full protocol, source of truth
+                                        │
+                                        └── dispatches ──▶  .claude/agents/<agent>.md
+```
+
+When you type `/search-lit` in the chat, Claude Code loads the command wrapper, which
+instructs Claude to read and follow the full skill protocol. Logic lives in `skills/`.
+Commands are entry points only. Never edit `commands/` to add logic — edit `skills/` instead.
 
 ---
 
@@ -243,8 +261,9 @@ Esta convención aplica a toda sesión donde se pusheen cambios, sin excepción.
 /templates/         IEEE paper, comparison table, revision response
 /workflows/         Process guides
 /.claude/
+  /commands/        Slash command entry points (wrappers — logic lives in /skills/)
   /agents/          Agent role specifications
   /references/      Domain knowledge (profile, venues, methods, benchmarks)
   /rules/           Content invariants
-  /skills/          Skill implementations
+  /skills/          Skill implementations (source of truth for all command logic)
 ```
